@@ -1,0 +1,181 @@
+---
+Language: Cpp
+Standard: c++20                                                     # parsing             ; recognise c++xx features
+
+# ----- bit fields
+AlignConsecutiveBitFields: Consecutive                              # bit fields          ; align
+BitFieldColonSpacing: After                                         # bit fields          ; add space after ':'
+
+
+# ----- brackets
+SpacesInContainerLiterals: false                                    # literals            ; [ 1, 2, 3 ] vs [1, 2, 3]
+AlignAfterOpenBracket: AlwaysBreak       # BlockIndent              # () [] <>            ; align arguments in them
+SpacesInAngles: Never                                               # <>                  ; <int> or < int >
+SpacesInSquareBrackets: false                                       # []                  ; a[ 1 ] or a[1]
+SpaceBeforeSquareBrackets: false                                    # []                  ; space before []
+SpaceBeforeParens: ControlStatementsExceptControlMacros             # ()                  ; space before ()
+SpaceInEmptyParentheses: false                                      # ()                  ; space in empty ()
+SpacesInParentheses: false                                          # ()                  ; f( a ) or f(a)
+AlignArrayOfStructures: Right                                       # {}                  ; align initialisation
+Cpp11BracedListStyle: false                                         # {} list             ; {1, 2, 3} or { 1, 2, 3 }
+SpaceBeforeCpp11BracedList: true                                    # {}                  ; space before initialisation
+SpaceInEmptyBlock: true                                             # {}                  ; space in empty {}
+
+BreakBeforeBraces: Custom                                           # {}                  ; Custom enables BraceWrapping
+BraceWrapping:                                                      # {}                  ; put a new line before '{' or after '}'
+  AfterCaseLabel: false                                             #    - after switch case
+  AfterClass: true                                                  #    - after class
+  AfterControlStatement: Never                                      #    - after if, for, while, switch
+  AfterEnum: false                                                  #    - after Enums
+  AfterFunction: true                                               #    - after fn()
+  AfterNamespace: false                                             #    - after namespace
+  AfterStruct: false                                                #    - after struct
+  AfterUnion: false                                                 #    - after union
+  AfterExternBlock: false                                           #    - after extern
+  BeforeCatch: false                                                #    - before catch
+  BeforeElse: false                                                 #    - before else
+  BeforeLambdaBody: false                                           #    - before lambda
+  BeforeWhile: false                                                #    - before while
+  IndentBraces: false                                               #    -                        ; indent {} on the new line
+  SplitEmptyFunction: false                                         #    - fn                     ; { \n } or one line {}
+  SplitEmptyRecord: false                                           #    - class, struct or union ; { \n } or one line {}
+  SplitEmptyNamespace: false                                        #    - namespace              ; { \n } or one line {}
+
+
+# ----- classes
+AllowShortEnumsOnASingleLine: true                                  # Enums               ; on one line
+BreakInheritanceList: BeforeComma                                   # class               ; break inheritance
+ConstructorInitializerIndentWidth: 4                                # class, ctor         ; indent initialiser and inheritance
+EmptyLineAfterAccessModifier: Never                                 # class               ; \n after access modifier
+EmptyLineBeforeAccessModifier: LogicalBlock                         # class               ; \n before access modifier
+IndentAccessModifiers: false                                        # class               ; indent access modifier, ignores AccessModifierOffset
+SpaceBeforeInheritanceColon: true                                   # class               ; space before inheritance colon
+BreakConstructorInitializers: BeforeComma                           # ctor                ; break initialiser
+# PackConstructorInitializers: Never  # clang-14                    # ctor                ; multiple initialisers on one line
+SpaceBeforeCtorInitializerColon: true                               # ctor                ; space brefore initialiser colon
+
+
+# ----- comments
+AlignTrailingComments: true                                         # comments            ; align // at the end of line
+ReflowComments: true                                                # comments            ; break if too long
+SpacesBeforeTrailingComments: 4                                     # comments            ; spaces before trailing comment
+SpacesInLineCommentPrefix:                                          # comments
+  Minimum: 1                                                        #    - min spaces between '//' and the actual comment
+  Maximum: -1                                                       #    - max spaces between '//' and the actual comment (-1 is turn off)
+
+
+# ----- control statements
+SpacesInConditionalStatement: false                                 # if                  ; ( cond ) or (cond)
+AllowShortBlocksOnASingleLine: Always                               # if, while, for      ; on one line
+AllowShortIfStatementsOnASingleLine: Never                          # if-else             ; on one line
+AllowShortLoopsOnASingleLine: false                                 # while, for          ; on one line
+SpaceBeforeRangeBasedForLoopColon: true                             # for                 ; space before range based colon
+AllowShortCaseLabelsOnASingleLine: false                            # switch case         ; on one line
+IndentCaseBlocks: false                                             # switch case         ; indent blocks
+IndentCaseLabels: true                                              # switch case         ; indent labels
+SpaceBeforeCaseColon: true                                          # switch case         ; case colon space
+IndentGotoLabels: true                                              # go-to               ; indent labels
+
+
+# ----- functions
+AllowAllArgumentsOnNextLine: false                                  # fn()                ; break arg list
+AllowAllParametersOfDeclarationOnNextLine: false                    # fn()                ; break declaration list
+AllowShortFunctionsOnASingleLine: Inline                            # fn()                ; on one line
+AlwaysBreakAfterReturnType: None  # alt: None, AllDefinitions       # fn()                ; break after return type
+BinPackArguments: false                                             # fn()                ; in call multiple args on one line
+BinPackParameters: false                                            # fn()                ; in declaration multiple args on one line
+IndentWrappedFunctionNames: false                                   # fn()                ; indent fn name if wrapped after return type
+# QualifierAlignment: Custom          # clang-14                    # fn                  ; order of qualifiers
+# QualifierOrder: ['static', 'inline', 'const', 'volatile', 'type', constexpr, restrict ]   # needs QualifierAlignment: Custom
+AllowShortLambdasOnASingleLine: Inline                              # lambda              ; on one line
+LambdaBodyIndentation: Signature                                    # lambda              ; align lambda body relative to
+
+
+# ----- indentation
+ColumnLimit: 150                                                    # indentation
+AccessModifierOffset: -4                                            # indentation
+ContinuationIndentWidth: 2                                          # indentation         ; line continuations
+IndentWidth: 4                                                      # indentation
+PPIndentWidth: -1                                                   # indentation         ; preprocessor indent, -1 means use IndentWidth
+TabWidth: 4                                                         # indentation         ; tab width
+
+DerivePointerAlignment: false                                       # alignment           ; analyse for right-left binding
+PointerAlignment: Right                                             # alignment           ; align to a side needs DerivePointerAlignment: false
+ReferenceAlignment: Right                                           # alignment           ; align to a side needs DerivePointerAlignment: false
+SpaceAroundPointerQualifiers: Default                               # alignment           ; space around ptrs
+
+AlignEscapedNewlines: Left                                          # lines               ; align new line breaks '\'
+DeriveLineEnding: false                                             # lines               ; analyse line ending for \r\n or \n
+KeepEmptyLinesAtTheStartOfBlocks: false                             # lines               ; keep emty lines
+MaxEmptyLinesToKeep: 1                                              # lines               ; max empty lines to keep
+UseCRLF: false                                                      # lines               ; use \r\n instead of \n
+UseTab: Never                                                       # lines               ; use tab instead of spaces
+
+
+# ----- namespace
+SortUsingDeclarations: true                                         # using               ; sort using
+
+CompactNamespaces: false                                            # namespace           ; on one line
+FixNamespaceComments: true                                          # namespace           ; add "// namespace a" after "}"
+NamespaceIndentation: None                                          # namespace           ; indent namespace
+ShortNamespaceLines: 0                                              # namespace           ;
+
+
+# ----- operators
+AlignConsecutiveAssignments: Consecutive                            # operator            ; align assignment
+AlignOperands: AlignAfterOperator                                   # operator            ; align + is below =
+BreakBeforeBinaryOperators: NonAssignment                           # operator            ; put non-assignment bin op on a new line
+BreakBeforeTernaryOperators: true                                   # operator            ; break before ternary
+SpaceAfterLogicalNot: false                                         # operator            ; ! var or !var
+SpaceBeforeAssignmentOperators: true                                # operator            ; a = 1 or a= 1
+
+
+# ----- preprocessor
+IndentExternBlock: Indent                                           # extern              ; indent block
+IncludeBlocks: Preserve                                             # include             ; reorganise logically
+SortIncludes: CaseSensitive                                         # include             ; sort order
+AlignConsecutiveMacros: Consecutive                                 # macro               ; align
+IndentPPDirectives: None                                            # preprocessor        ; indent directives
+
+
+# ----- template
+AlwaysBreakTemplateDeclarations: Yes                                # template            ; break after
+BreakBeforeConceptDeclarations: true                                # template            ; break before concept
+IndentRequires: false                                               # template            ; indent requires clause
+SpaceAfterTemplateKeyword: false                                    # template            ; template <int> or template<int>
+
+
+# ----- variables
+AlignConsecutiveDeclarations: None                                  # vars                ; align vars after type
+AlwaysBreakBeforeMultilineStrings: true                             # string              ; break before multi line
+BreakStringLiterals: true                                           # string              ; break long ones
+SpaceAfterCStyleCast: false                                         # casting             ; (int) var or (int)var
+SpacesInCStyleCastParentheses: false                                # casting             ; ( int ) or (int)
+
+
+# ----- penalties
+# PenaltyBreakBeforeFirstCallParameter:
+# PenaltyBreakAssignment:
+# PenaltyBreakComment:
+# PenaltyBreakFirstLessLess:
+# PenaltyBreakString:
+# PenaltyBreakTemplateDeclaration:
+# PenaltyExcessCharacter:
+# PenaltyIndentedWhitespace:
+# PenaltyReturnTypeOnItsOwnLine:
+
+
+# ----- unused
+# RawStringFormats:
+# AttributeMacros:
+# CommentPragmas:
+# DisableFormat: false
+# ForEachMacros:
+# IfMacros:
+# IncludeCategories:
+# IncludeIsMainRegex:
+# IncludeIsMainSourceRegex:
+# MacroBlockBegin:
+# MacroBlockEnd:
+# NamespaceMacros:
+...
