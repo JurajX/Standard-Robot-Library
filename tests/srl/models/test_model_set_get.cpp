@@ -56,6 +56,23 @@ protected:
         { 0, 4, 0},
         { 0, 0, 5}
     };
+
+    srl::Matrix3X<FP> principals {
+        {3, 3, 3},
+        {4, 4, 4},
+        {5, 5, 5}
+    };
+    srl::Matrix3X<FP> principalsBad {
+        {3, 3},
+        {4, 4},
+        {5, 5}
+    };
+    srl::Matrix3X<FP> rots {
+        {1, 0, 0},
+        {0, 2, 0},
+        {0, 0, 3}
+    };
+
     srl::VectorX<FP> &damping { lMasses };
     srl::VectorX<FP> &dampingBad1 { lMassesBad1 };
 
@@ -128,12 +145,21 @@ TYPED_TEST(TestSettersAndGetters, LinkInertiaTensors)
     // Testing setLinkInertiaTensors and getLinkInertiaTensors
     srl::vector<srl::Matrix3<TypeParam>> inertias { this->inertia, this->inertia, this->inertia };
     srl::vector<srl::Matrix3<TypeParam>> inertiasBad { this->inertia, this->inertia, this->inertiaBad };
+    srl::vector<srl::Matrix3<TypeParam>> expected;
+    for (srl::uint idx = 0; idx < this->nJoints; idx += 1) {
+        srl::Matrix3<TypeParam> rot { srl::math::rotation(srl::Vector3<TypeParam> { this->rots.col(idx) }) };
+        expected.emplace_back(srl::math::adjoint(srl::Vector3<TypeParam> { this->principals.col(idx) }, rot));
+    }
     // normal setting
     this->model.setLinkInertiaTensors(inertias);
     EXPECT_EQ(this->model.getLinkInertiaTensors(), inertias);
+    this->model.setLinkInertiaTensors(this->principals, this->rots);
+    EXPECT_EQ(this->model.getLinkInertiaTensors(), expected);
     // incorrect size
     EXPECT_THROW(this->model.setLinkInertiaTensors(inertiasBad), std::invalid_argument);
+    EXPECT_THROW(this->model.setLinkInertiaTensors(this->principalsBad, this->rots), std::invalid_argument);
     EXPECT_THROW(this->modelBad.setLinkInertiaTensors(inertias), std::invalid_argument);
+    EXPECT_THROW(this->modelBad.setLinkInertiaTensors(this->principals, this->rots), std::invalid_argument);
 }
 
 TYPED_TEST(TestSettersAndGetters, JointDampings)
