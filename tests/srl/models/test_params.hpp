@@ -76,9 +76,9 @@ inline const srl::Matrix3X<FP> linkCoM {
 
 template<srl::concepts::floating_point FP>
 inline const srl::Matrix3X<FP> principalInertias {
-    {3., 1.2},
-    {4., 2.0},
-    {5., 1.2}
+    {3., 2.},
+    {4., 3.},
+    {5., 2.}
 };
 
 template<srl::concepts::floating_point FP>
