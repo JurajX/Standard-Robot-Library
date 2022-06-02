@@ -99,7 +99,11 @@ protected:
     };
 
     srl::uint nJoints { this->model.getNumberOfJoints() };
+#ifndef NDEBUG
+    size_t size { 1'000 };
+#else
     size_t size { 10'000 };
+#endif
     srl::vector<srl::VectorX<FP>> qSet { srl::utils::getRandVectors<FP>(size, nJoints, -srl::kPI<FP>, srl::kPI<FP>) };
     srl::vector<srl::VectorX<FP>> dqSet { srl::utils::getRandVectors<FP>(size, nJoints, -srl::kPI<FP>, srl::kPI<FP>) };
 
@@ -165,7 +169,11 @@ protected:
                                        pendulum::dual::damping<FP> };
 
     srl::uint nJoints { this->model.getNumberOfJoints() };
+#ifndef NDEBUG
+    size_t size { 1'000 };
+#else
     size_t size { 10'000 };
+#endif
     srl::vector<srl::VectorX<FP>> qSet { srl::utils::getRandVectors<FP>(size, nJoints, -srl::kPI<FP>, srl::kPI<FP>) };
     srl::vector<srl::VectorX<FP>> dqSet { srl::utils::getRandVectors<FP>(size, nJoints, -srl::kPI<FP>, srl::kPI<FP>) };
 
@@ -288,7 +296,11 @@ protected:
                                        true };
 
     srl::Map<const srl::VectorX<FP>> damping { chain::damping<FP>.data(), static_cast<srl::uint>(chain::damping<FP>.size()) };
-    size_t size { 10'000 };
+#ifndef NDEBUG
+    size_t size { 10 };
+#else
+    size_t size { 1'000 };
+#endif
     srl::uint nJoints { this->model.getNumberOfJoints() };
     srl::vector<srl::VectorX<FP>> qSet { srl::utils::getRandVectors<FP>(size, nJoints, -srl::kPI<FP>, srl::kPI<FP>) };
     FP delta { 1e-5 };
