@@ -39,7 +39,7 @@ protected:
     Cont cont;
     Cont contBad;
 };
-TYPED_TEST_SUITE(TestDynamicsType, Indexables);
+TYPED_TEST_SUITE(TestDynamicsType, Indexables, );
 
 template<srl::concepts::indexable Cont>
 TestDynamicsType<Cont>::TestDynamicsType()
@@ -110,7 +110,7 @@ protected:
     FP mass { model.getLinkMasses()[0] };
     FP projectedInertia { rotAxis.transpose() * model.getLinkInertiaTensors()[0] * rotAxis };
 };
-TYPED_TEST_SUITE(TestSinglePendulum, FPtypes);
+TYPED_TEST_SUITE(TestSinglePendulum, FPtypes, );
 
 TYPED_TEST(TestSinglePendulum, PhysicalAroundCom)
 {
@@ -179,7 +179,7 @@ protected:
                                         rotAxes[1].transpose() * model.getLinkInertiaTensors()[1] * rotAxes[1] };
     auto setNonPlanarRotAxes() -> void;
 };
-TYPED_TEST_SUITE(TestDoublePendulum, FPtypes);
+TYPED_TEST_SUITE(TestDoublePendulum, FPtypes, );
 
 template<srl::concepts::floating_point FP>
 auto TestDoublePendulum<FP>::setNonPlanarRotAxes() -> void

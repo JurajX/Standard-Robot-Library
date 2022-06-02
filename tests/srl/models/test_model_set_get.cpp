@@ -67,7 +67,7 @@ protected:
     srl::model::RobotModel<FP> model { nJoints };
     srl::model::RobotModel<FP> modelBad { nJointsBad };
 };
-TYPED_TEST_SUITE(TestSettersAndGetters, FPtypes);
+TYPED_TEST_SUITE(TestSettersAndGetters, FPtypes, );
 
 TYPED_TEST(TestSettersAndGetters, NumberOfJointsAndLinks)
 {

@@ -52,7 +52,7 @@ protected:
     Cont jAngles;
     Cont jAnglesBad;
 };
-TYPED_TEST_SUITE(TestKinematicsType, Indexables);
+TYPED_TEST_SUITE(TestKinematicsType, Indexables, );
 
 template<srl::concepts::indexable Cont>
 TestKinematicsType<Cont>::TestKinematicsType()
