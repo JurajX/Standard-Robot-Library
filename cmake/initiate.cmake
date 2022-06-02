@@ -4,8 +4,10 @@ macro(initiate)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
     include(CTest)
-    include(add_compile_options)
-    include(add_exe)
     include(doxygen)
-    include(fmt)
+    include(FetchContent)
+    include(fmt)                    # needs FetchContent
+    include(gtest)                  # needs FetchContent
+    include(add_compile_options)
+    include(add_exe)                # needs add_compile_options and gtest
 endmacro(initiate)

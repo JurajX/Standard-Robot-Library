@@ -6,7 +6,7 @@ find_package(
 function(add_docs)
     set(options ENABLE_PREPROCESSING MACRO_EXPANSION)
     set(oneValueArgs NAME OUTPUT_DIRECTORY)
-    set(multiValueArgs FILES_DIRS EXAMPLE_PATH)
+    set(multiValueArgs FILE_DIRS EXAMPLE_PATH)
     cmake_parse_arguments(DOCS "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     set(DOXYGEN_NUM_PROC_THREADS 0)
@@ -25,7 +25,7 @@ function(add_docs)
     set(DOXYGEN_GENERATE_TREEVIEW YES)
     set(DOXYGEN_FULL_SIDEBAR NO)
 
-    if(NOT DOCS_OUTPUT_DIRECTORY)
+    if(NOT DEFINED DOCS_OUTPUT_DIRECTORY)
         set(DOCS_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/docs)
     endif()
     set(DOXYGEN_OUTPUT_DIRECTORY ${DOCS_OUTPUT_DIRECTORY})
@@ -38,7 +38,7 @@ function(add_docs)
 
     doxygen_add_docs(
         "documentation"
-        ${DOCS_FILES_DIRS}
+        ${DOCS_FILE_DIRS}
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
         COMMENT "API documentation for ${DOCS_NAME}."
     )

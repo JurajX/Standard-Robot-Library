@@ -436,7 +436,6 @@ private:
     //
     // =============== =============== Members
 private:
-public:
     static inline constexpr srl::uint kDim { srl::kDim };
     static inline const srl::vector<srl::Matrix3<FP>> kSo3 { srl::kSo3<FP> };
 

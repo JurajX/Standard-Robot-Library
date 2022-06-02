@@ -75,9 +75,9 @@ inline const srl::vector<Matrix3<FP>> kSo3 {
     Matrix3<FP> {{ 0, -1, 0 },  { 1, 0, 0 },  { 0, 0, 0 }}
 };
 /// @brief Definition of the so3 generators for double.
-inline const srl::vector<Matrix3d> kSo3d { kSo3<double>[0], kSo3<double>[1], kSo3<double>[2] };
+inline const srl::vector<Matrix3d> kSo3d { kSo3<double> };
 /// @brief Definition of the so3 generators for float.
-inline const srl::vector<Matrix3f> kSo3f { kSo3<float>[0], kSo3<float>[1], kSo3<float>[2] };
+inline const srl::vector<Matrix3f> kSo3f { kSo3<float> };
 
 }    // namespace srl
 

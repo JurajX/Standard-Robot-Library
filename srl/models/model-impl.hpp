@@ -455,7 +455,7 @@ auto RobotModel<FP>::setJointRotationAxes(const srl::Matrix3X<FP> &joint_rotatio
     srl::Vector3<FP> axis;
     So3Axes_.resize(kNumJoints_);
     for (srl::uint iJoint = 0; iJoint < kNumJoints_; iJoint += 1)
-        So3Axes_[iJoint] = srl::math::so3element<FP>({ jointRotationAxes_.col(iJoint) });
+        So3Axes_[iJoint] = srl::math::so3element<FP>(srl::Vector3<FP> { jointRotationAxes_.col(iJoint) });
 }
 
 template<srl::concepts::floating_point FP>
@@ -535,6 +535,12 @@ auto RobotModel<FP>::setLinkInertiaTensors(const srl::vector<srl::Matrix3<FP>> &
         }
     }
     linkInertias_ = link_inertia_tensors;
+}
+
+template<srl::concepts::floating_point FP>
+auto RobotModel<FP>::setLinkInertiaTensors(const srl::Matrix3X<FP> &principal_link_inertias, const srl::Matrix3X<FP> &principal_rotations) -> void
+{
+    setLinkInertiaTensors(makeLinkInertiaTensors(principal_link_inertias, principal_rotations));
 }
 
 template<srl::concepts::floating_point FP>
