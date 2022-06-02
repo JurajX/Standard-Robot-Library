@@ -16,7 +16,7 @@ using FPtypes = ::testing::Types<float, double>;
 template<srl::concepts::floating_point FP>
 class TestEq : public ::testing::Test
 { };
-TYPED_TEST_SUITE(TestEq, FPtypes);
+TYPED_TEST_SUITE(TestEq, FPtypes, );
 
 TYPED_TEST(TestEq, Eq)
 {
@@ -37,7 +37,7 @@ TYPED_TEST(TestEq, Eq)
 template<srl::concepts::floating_point FP>
 class TestMatEq : public ::testing::Test
 { };
-TYPED_TEST_SUITE(TestMatEq, FPtypes);
+TYPED_TEST_SUITE(TestMatEq, FPtypes, );
 
 TYPED_TEST(TestMatEq, MatEq)
 {
@@ -77,7 +77,7 @@ protected:
         {0,  0, 1}
     };
 };
-TYPED_TEST_SUITE(TestRotation, FPtypes);
+TYPED_TEST_SUITE(TestRotation, FPtypes, );
 
 TYPED_TEST(TestRotation, AngleAxisInputs)
 {
@@ -136,7 +136,7 @@ TYPED_TEST(TestRotation, RotationVectorInputsZero)
 template<srl::concepts::floating_point FP>
 class TestAdjoint : public TestRotation<FP>
 { };
-TYPED_TEST_SUITE(TestAdjoint, FPtypes);
+TYPED_TEST_SUITE(TestAdjoint, FPtypes, );
 
 TYPED_TEST(TestAdjoint, MatrixMatrixInputs)
 {
@@ -173,7 +173,7 @@ TYPED_TEST(TestAdjoint, VectorMatrixInputs)
 template<srl::concepts::floating_point FP>
 class TestSo3element : public ::testing::Test
 { };
-TYPED_TEST_SUITE(TestSo3element, FPtypes);
+TYPED_TEST_SUITE(TestSo3element, FPtypes, );
 
 TYPED_TEST(TestSo3element, TestCreation)
 {
@@ -209,7 +209,7 @@ protected:
     srl::Matrix3<FP> notPosDef2 { rot * badPrincipal * this->rotByPiHalfAroundZ.transpose() };
     srl::Matrix3<FP> notPosDef3 { rot * notPrincipal * rot.transpose() };
 };
-TYPED_TEST_SUITE(TestInertia, FPtypes);
+TYPED_TEST_SUITE(TestInertia, FPtypes, );
 
 TYPED_TEST(TestInertia, TestIsPositiveDefinite)
 {
@@ -245,7 +245,7 @@ protected:
         {7, 8, 9}
     };
 };
-TYPED_TEST_SUITE(TestSVD, FPtypes);
+TYPED_TEST_SUITE(TestSVD, FPtypes, );
 
 TYPED_TEST(TestSVD, TestSVD)
 {
