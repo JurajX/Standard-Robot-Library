@@ -1,4 +1,4 @@
-.Phony: test build docs clean cclean format
+.Phony: test build docs clean cclean
 
 test:
 	${MAKE} -C ${build_dir} test
@@ -16,9 +16,6 @@ clean:
 
 cclean:
 	rm -rf ${build_dir}
-
-format:
-	clang-format -i -style=file ${project_files}
 
 
 # -------------------------------------------

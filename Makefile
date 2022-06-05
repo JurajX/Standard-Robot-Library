@@ -1,3 +1,4 @@
+SHELL = /bin/zsh
 # project constants
 comma := ,
 empty :=
@@ -44,33 +45,42 @@ CXX_COMPILER = $(if ${not_gcc},clang++,g++-11)
 gcov := /usr/local/opt/gcc@11/bin/gcov-11
 llvm_path := /usr/local/opt/llvm
 path := ${PATH}
-export PATH = $(if ${not_gcc},${llvm_path}/bin/:${path},${path})
+export PATH = $(if ${not_gcc},${llvm_path}/bin:${path},${path})
 export LDFLAGS = $(if ${not_gcc},-L${llvm_path}/lib,${empty})
 export CPPFLAGS = $(if ${not_gcc},-I${llvm_path}/include,${empty})
 
 .Phony: all cleanall
 
-all: format docs
+all: tidy format docs
 	${MAKE} combinations
 
 cleanall:
 	rm -rf ${build}
 
 # needs:
-#  - targets: build, test, and coverage
+#  - targets: build, test, coverage
 # provides:
-#  - targets: combinations release debug cov
+#  - targets: combinations, release, debug, cov
 include ${project_path}/make/combinations.mk
 
 # needs:
-#  - variables: C_COMPILER, CXX_COMPILER, BUILD_TYPE, project_path, build_dir, docs_path, project_files
+#  - variables: C_COMPILER, CXX_COMPILER, BUILD_TYPE, project_path, build_dir, docs_path
 # provides:
-#  - targets:   test build docs clean cclean format
+#  - targets:   test, build, docs, clean, cclean
 include ${project_path}/make/build.mk
 
 # needs:
-#  - targets:   build and test
-#  - variables: gcov, lcov, llvm-profdata, llvm-cov, not_gcc, project_path, srcs, objs, cov_dir, space
+#  - targets:   build, test
+#  - variables: not_gcc, project_path, srcs, objs, cov_dir, space
+#  - programme: gcov, lcov, llvm-profdata, llvm-cov
 # provides:
 #  - targets:   coverage
 include ${project_path}/make/coverage.mk
+
+# needs:
+#  - targets:   build/cmake
+#  - variables: project_path, build_dir
+#  - programme: run-clang-tidy, clang-format
+# provides:
+#  - targets:   tidy, format
+include ${project_path}/make/checks.mk
