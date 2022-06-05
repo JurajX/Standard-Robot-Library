@@ -1,7 +1,7 @@
 .Phony: tidy format
 
 tidy: export COMPILER=clang
-tidy: export BUILD_TYPE=tidy
+tidy: export BUILD_TYPE=Tidy
 tidy:
 	${MAKE} build/cmake
 	@echo this echo is necessary else the path is not set-up correctly &&\
