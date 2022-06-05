@@ -13,48 +13,6 @@
 
 namespace srl::utils {
 
-template<class Fn, class Obj, class... Args>
-requires srl::concepts::invocable<Fn, Obj, Args...>
-auto timeMemberFn(std::string_view msg, Fn &&m_fn, Obj obj, srl::vector<std::tuple<Args...>> &args_vec) -> void
-{
-    auto fn = std::bind_front(m_fn, obj);
-    auto start { std::chrono::steady_clock::now() };
-    for (auto &args : args_vec) {
-        std::apply(fn, args);
-    }
-    auto finish { std::chrono::steady_clock::now() };
-    double diff { std::chrono::duration<double, std::nano>(finish - start).count() / static_cast<double>(args_vec.size()) };
-    fmt::print("{:>30}: {:10.1f} ns\n", msg, diff);
-}
-
-template<class Fn, class Obj, class Arg>
-requires srl::concepts::invocable<Fn, Obj, Arg>
-auto timeMemberFn(std::string_view msg, Fn &&m_fn, Obj obj, srl::vector<Arg> &arg_vec) -> void
-{
-    auto fn = std::bind_front(m_fn, obj);
-    auto start { std::chrono::steady_clock::now() };
-    for (auto &arg : arg_vec) {
-        fn(arg);
-    }
-    auto finish { std::chrono::steady_clock::now() };
-    double diff { std::chrono::duration<double, std::nano>(finish - start).count() / static_cast<double>(arg_vec.size()) };
-    fmt::print("{:>30}: {:10.1f} ns\n", msg, diff);
-}
-
-template<class Fn, class Obj>
-requires srl::concepts::invocable<Fn, Obj>
-auto timeMemberFn(std::string_view msg, Fn &&m_fn, Obj obj, size_t &n) -> void
-{
-    auto fn = std::bind_front(m_fn, obj);
-    auto start { std::chrono::steady_clock::now() };
-    for (size_t idx = 0; idx < n; idx += 1) {
-        fn();
-    }
-    auto finish { std::chrono::steady_clock::now() };
-    double diff { std::chrono::duration<double, std::nano>(finish - start).count() / static_cast<double>(n) };
-    fmt::print("{:>30}: {:10.1f} ns\n", msg, diff);
-}
-
 template<class Fn, class... Args>
 requires srl::concepts::invocable<Fn, Args...>
 auto timeFn(std::string_view msg, Fn &&fn, srl::vector<std::tuple<Args...>> &args_vec) -> void
