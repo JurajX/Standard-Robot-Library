@@ -22,22 +22,22 @@ class TestDynamicsType : public ::testing::Test
 {
 protected:
     using FP = double;
-    srl::QuatVec3<FP> basePose { srl::Quat<FP>::Identity(), srl::Vector3<FP>::Zero() };
-    srl::Vector3<FP> gravityDirection { 0, 0, -1 };
+    const static inline srl::QuatVec3<FP> basePose { srl::Quat<FP>::Identity(), srl::Vector3<FP>::Zero() };
+    const static inline srl::Vector3<FP> gravityDirection { 0, 0, -1 };
+    // NOLINTNEXTLINE
     srl::model::RobotModel<FP> model { chain::jointRotAxes<FP>,
                                        chain::frameCoos<FP>,
                                        chain::masses<FP>,
                                        chain::linkCoM<FP>,
-                                       chain::principalInertias<FP>,
-                                       chain::rotationOfPrincipalAxes<FP>,
+                                       chain::inertias<FP>,
                                        chain::damping<FP>,
                                        basePose,
                                        gravityDirection,
                                        true };
 
     TestDynamicsType();
-    Cont cont;
-    Cont contBad;
+    Cont cont;       // NOLINT
+    Cont contBad;    // NOLINT
 };
 TYPED_TEST_SUITE(TestDynamicsType, Indexables, );
 
@@ -57,25 +57,25 @@ TestDynamicsType<Cont>::TestDynamicsType()
     }
 }
 
-TYPED_TEST(TestDynamicsType, InputType_fk)
+TYPED_TEST(TestDynamicsType, InputType_fk)    // NOLINT
 {
     // Testing argument acceptation of dynamics functions.
-    EXPECT_NO_THROW(this->model.getMassMatrixAndPotEnergy(this->cont));
-    EXPECT_NO_THROW(this->model.getLagrangian(this->cont, this->cont));
-    EXPECT_NO_THROW(this->model.getEomParams(this->cont));
-    EXPECT_NO_THROW(this->model.getMotorTorque(this->cont, this->cont, this->cont));
-    EXPECT_NO_THROW(this->model.getAngularAcceleration(this->cont, this->cont, this->cont));
+    EXPECT_NO_THROW(this->model.getMassMatrixAndPotEnergy(this->cont));                         // NOLINT
+    EXPECT_NO_THROW(this->model.getLagrangian(this->cont, this->cont));                         // NOLINT
+    EXPECT_NO_THROW(this->model.getEomParams(this->cont));                                      // NOLINT
+    EXPECT_NO_THROW(this->model.getMotorTorque(this->cont, this->cont, this->cont));            // NOLINT
+    EXPECT_NO_THROW(this->model.getAngularAcceleration(this->cont, this->cont, this->cont));    // NOLINT
 #ifndef NDEBUG
-    EXPECT_THROW(this->model.getMassMatrixAndPotEnergy(this->contBad), std::invalid_argument);
-    EXPECT_THROW(this->model.getLagrangian(this->contBad, this->cont), std::invalid_argument);
-    EXPECT_THROW(this->model.getLagrangian(this->cont, this->contBad), std::invalid_argument);
-    EXPECT_THROW(this->model.getEomParams(this->contBad), std::invalid_argument);
-    EXPECT_THROW(this->model.getMotorTorque(this->contBad, this->cont, this->cont), std::invalid_argument);
-    EXPECT_THROW(this->model.getMotorTorque(this->cont, this->contBad, this->cont), std::invalid_argument);
-    EXPECT_THROW(this->model.getMotorTorque(this->cont, this->cont, this->contBad), std::invalid_argument);
-    EXPECT_THROW(this->model.getAngularAcceleration(this->contBad, this->cont, this->cont), std::invalid_argument);
-    EXPECT_THROW(this->model.getAngularAcceleration(this->cont, this->contBad, this->cont), std::invalid_argument);
-    EXPECT_THROW(this->model.getAngularAcceleration(this->cont, this->cont, this->contBad), std::invalid_argument);
+    EXPECT_THROW(this->model.getMassMatrixAndPotEnergy(this->contBad), std::invalid_argument);                         // NOLINT
+    EXPECT_THROW(this->model.getLagrangian(this->contBad, this->cont), std::invalid_argument);                         // NOLINT
+    EXPECT_THROW(this->model.getLagrangian(this->cont, this->contBad), std::invalid_argument);                         // NOLINT
+    EXPECT_THROW(this->model.getEomParams(this->contBad), std::invalid_argument);                                      // NOLINT
+    EXPECT_THROW(this->model.getMotorTorque(this->contBad, this->cont, this->cont), std::invalid_argument);            // NOLINT
+    EXPECT_THROW(this->model.getMotorTorque(this->cont, this->contBad, this->cont), std::invalid_argument);            // NOLINT
+    EXPECT_THROW(this->model.getMotorTorque(this->cont, this->cont, this->contBad), std::invalid_argument);            // NOLINT
+    EXPECT_THROW(this->model.getAngularAcceleration(this->contBad, this->cont, this->cont), std::invalid_argument);    // NOLINT
+    EXPECT_THROW(this->model.getAngularAcceleration(this->cont, this->contBad, this->cont), std::invalid_argument);    // NOLINT
+    EXPECT_THROW(this->model.getAngularAcceleration(this->cont, this->cont, this->contBad), std::invalid_argument);    // NOLINT
 #endif
 }
 
@@ -89,34 +89,32 @@ template<srl::concepts::floating_point FP>
 class TestSinglePendulum : public ::testing::Test
 {
 protected:
-    FP rTol { sizeof(FP) == sizeof(double) ? static_cast<FP>(1e-5) : static_cast<FP>(1e-3) };
-    FP aTol { sizeof(FP) == sizeof(double) ? static_cast<FP>(1e-8) : static_cast<FP>(1e-3) };
+    const static inline FP rTol { sizeof(FP) == sizeof(double) ? static_cast<FP>(1e-5) : static_cast<FP>(1e-3) };
+    const static inline FP aTol { sizeof(FP) == sizeof(double) ? static_cast<FP>(1e-8) : static_cast<FP>(1e-3) };
 
-    srl::model::RobotModel<FP> model {
-        pendulum::single::jointRotAxes<FP>, pendulum::single::frameCoos<FP>,         pendulum::single::masses<FP>,
-        pendulum::single::linkCoM<FP>,      pendulum::single::principalInertias<FP>, pendulum::single::rotationOfPrincipalAxes<FP>,
-        pendulum::single::damping<FP>
-    };
+    // NOLINTNEXTLINE
+    srl::model::RobotModel<FP> model { pendulum::single::jointRotAxes<FP>, pendulum::single::frameCoos<FP>, pendulum::single::masses<FP>,
+                                       pendulum::single::linkCoM<FP>,      pendulum::single::inertias<FP>,  pendulum::single::damping<FP> };
 
-    srl::uint nJoints { this->model.getNumberOfJoints() };
 #ifndef NDEBUG
-    size_t size { 1'000 };
+    const static inline size_t size { 1'000 };
 #else
-    size_t size { 10'000 };
+    const static inline size_t size { 10'000 };
 #endif
-    srl::vector<srl::VectorX<FP>> qSet { srl::utils::getRandVectors<FP>(size, nJoints, -srl::kPI<FP>, srl::kPI<FP>) };
-    srl::vector<srl::VectorX<FP>> dqSet { srl::utils::getRandVectors<FP>(size, nJoints, -srl::kPI<FP>, srl::kPI<FP>) };
+    const static inline srl::uint nJoints { pendulum::single::numLinks };
+    const static inline srl::vector<srl::VectorX<FP>> qSet { srl::utils::getRandVectors<FP>(size, nJoints, -srl::kPI<FP>, srl::kPI<FP>) };
+    const static inline srl::vector<srl::VectorX<FP>> dqSet { srl::utils::getRandVectors<FP>(size, nJoints, -srl::kPI<FP>, srl::kPI<FP>) };
 
-    srl::Vector3<FP> com { model.getLinkCentresOfMasses().col(0) };
-    srl::Vector3<FP> rotAxis { model.getJointRotationAxes().col(0) };
+    const static inline srl::Vector3<FP> com { pendulum::single::linkCoM<FP>.col(0) };
+    const static inline srl::Vector3<FP> rotAxis { pendulum::single::jointRotAxes<FP>.col(0) };
 
-    FP half { 0.5 };
-    FP mass { model.getLinkMasses()[0] };
-    FP projectedInertia { rotAxis.transpose() * model.getLinkInertiaTensors()[0] * rotAxis };
+    const static inline FP half { 0.5 };
+    const static inline FP mass { pendulum::single::masses<FP>[0] };
+    const static inline FP projectedInertia { rotAxis.transpose() * pendulum::single::inertias<FP>[0] * rotAxis };
 };
 TYPED_TEST_SUITE(TestSinglePendulum, FPtypes, );
 
-TYPED_TEST(TestSinglePendulum, PhysicalAroundCom)
+TYPED_TEST(TestSinglePendulum, PhysicalAroundCom)    // NOLINT
 {
     // Test Lagrangian calculation on single pendulum rotating around CoM.
     using FP = TypeParam;
@@ -130,7 +128,7 @@ TYPED_TEST(TestSinglePendulum, PhysicalAroundCom)
     }
 }
 
-TYPED_TEST(TestSinglePendulum, Physical)
+TYPED_TEST(TestSinglePendulum, Physical)    // NOLINT
 {
     // Test Lagrangian calculation on single pendulum not rotating around CoM.
     using FP = TypeParam;
@@ -157,34 +155,35 @@ template<srl::concepts::floating_point FP>
 class TestDoublePendulum : public ::testing::Test
 {
 protected:
-    FP rTol { sizeof(FP) == sizeof(double) ? static_cast<FP>(1e-5) : static_cast<FP>(1e-3) };
-    FP aTol { sizeof(FP) == sizeof(double) ? static_cast<FP>(1e-8) : static_cast<FP>(1e-3) };
+    const static inline FP rTol { sizeof(FP) == sizeof(double) ? static_cast<FP>(1e-5) : static_cast<FP>(1e-3) };
+    const static inline FP aTol { sizeof(FP) == sizeof(double) ? static_cast<FP>(1e-8) : static_cast<FP>(1e-3) };
 
-    srl::model::RobotModel<FP> model { pendulum::dual::jointRotAxesPlanar<FP>,
-                                       pendulum::dual::frameCoos<FP>,
-                                       pendulum::dual::masses<FP>,
-                                       pendulum::dual::linkCoM<FP>,
-                                       pendulum::dual::principalInertias<FP>,
-                                       pendulum::dual::rotationOfPrincipalAxes<FP>,
-                                       pendulum::dual::damping<FP> };
+    // NOLINTNEXTLINE
+    srl::model::RobotModel<FP> model {
+        pendulum::dual::jointRotAxesPlanar<FP>, pendulum::dual::frameCoos<FP>, pendulum::dual::masses<FP>, pendulum::dual::linkCoM<FP>,
+        pendulum::dual::inertias<FP>,           pendulum::dual::damping<FP>
+    };
 
-    srl::uint nJoints { this->model.getNumberOfJoints() };
 #ifndef NDEBUG
-    size_t size { 1'000 };
+    const static inline size_t size { 1'000 };
 #else
-    size_t size { 10'000 };
+    const static inline size_t size { 10'000 };
 #endif
-    srl::vector<srl::VectorX<FP>> qSet { srl::utils::getRandVectors<FP>(size, nJoints, -srl::kPI<FP>, srl::kPI<FP>) };
-    srl::vector<srl::VectorX<FP>> dqSet { srl::utils::getRandVectors<FP>(size, nJoints, -srl::kPI<FP>, srl::kPI<FP>) };
+    const static inline srl::uint nJoints { pendulum::dual::numLinks };
+    const static inline srl::vector<srl::VectorX<FP>> qSet { srl::utils::getRandVectors<FP>(size, nJoints, -srl::kPI<FP>, srl::kPI<FP>) };
+    const static inline srl::vector<srl::VectorX<FP>> dqSet { srl::utils::getRandVectors<FP>(size, nJoints, -srl::kPI<FP>, srl::kPI<FP>) };
 
-    srl::vector<srl::Vector3<FP>> com { model.getLinkCentresOfMasses().col(0), model.getLinkCentresOfMasses().col(1) };
-    srl::vector<srl::Vector3<FP>> rotAxes { model.getJointRotationAxes().col(0), model.getJointRotationAxes().col(1) };
-    srl::vector<srl::Vector3<FP>> frameCoos { model.getLinkLengths().col(1), model.getLinkLengths().col(2) };
+    const static inline srl::vector<srl::Vector3<FP>> com { pendulum::dual::linkCoM<FP>.col(0), pendulum::dual::linkCoM<FP>.col(1) };
 
-    FP half { 0.5 };
-    srl::vector<FP> mass { model.getLinkMasses()[0], model.getLinkMasses()[1] };
-    srl::vector<FP> projectedInertias { rotAxes[0].transpose() * model.getLinkInertiaTensors()[0] * rotAxes[0],
-                                        rotAxes[1].transpose() * model.getLinkInertiaTensors()[1] * rotAxes[1] };
+    // NOLINTNEXTLINE
+    srl::vector<srl::Vector3<FP>> rotAxes { pendulum::dual::jointRotAxesPlanar<FP>.col(0), pendulum::dual::jointRotAxesPlanar<FP>.col(1) };
+    const static inline srl::vector<srl::Vector3<FP>> frameCoos { pendulum::dual::frameCoos<FP>.col(1), pendulum::dual::frameCoos<FP>.col(2) };
+
+    const static inline FP half { 0.5 };
+    const static inline srl::vector<FP> mass { pendulum::dual::masses<FP> };
+    // NOLINTNEXTLINE
+    srl::vector<FP> projectedInertias { rotAxes[0].transpose() * pendulum::dual::inertias<FP>[0] * rotAxes[0],
+                                        rotAxes[1].transpose() * pendulum::dual::inertias<FP>[1] * rotAxes[1] };
     auto setNonPlanarRotAxes() -> void;
 };
 TYPED_TEST_SUITE(TestDoublePendulum, FPtypes, );
@@ -198,7 +197,7 @@ auto TestDoublePendulum<FP>::setNonPlanarRotAxes() -> void
                           rotAxes[1].transpose() * model.getLinkInertiaTensors()[1] * rotAxes[1] };
 }
 
-TYPED_TEST(TestDoublePendulum, PhysicalPlanar)
+TYPED_TEST(TestDoublePendulum, PhysicalPlanar)    // NOLINT
 {
     // Test Lagrangian calculation on planar double pendulum.
     using FP = TypeParam;
@@ -227,7 +226,7 @@ TYPED_TEST(TestDoublePendulum, PhysicalPlanar)
     }
 }
 
-TYPED_TEST(TestDoublePendulum, PhysicalNonPlanar)
+TYPED_TEST(TestDoublePendulum, PhysicalNonPlanar)    // NOLINT
 {
     // Test Lagrangian calculation on non-planar double pendulum.
     this->setNonPlanarRotAxes();
@@ -239,7 +238,8 @@ TYPED_TEST(TestDoublePendulum, PhysicalNonPlanar)
     srl::vector<srl::Matrix3<FP>> inertias { this->model.getLinkInertiaTensors()[0], this->model.getLinkInertiaTensors()[1] };
     srl::MatrixX<FP> rotProjInertias { srl::MatrixX<FP>::Zero(2, 2) };
     srl::Matrix3<FP> tmp;
-    FP tmp1, tmp2;
+    FP tmp1 {};
+    FP tmp2 {};
 
     for (size_t idx = 0; idx < this->size; idx += 1) {
         auto &q { this->qSet[idx] };
@@ -282,37 +282,38 @@ class TestDerivatives : public ::testing::Test
 {
 protected:
     using FP = double;
-    srl::QuatVec3<FP> basePose { srl::Quat<FP>::Identity(), srl::Vector3<FP>::Zero() };
-    srl::Vector3<FP> gravityDirection { 0, 0, -1 };
+    const static inline srl::QuatVec3<FP> basePose { srl::Quat<FP>::Identity(), srl::Vector3<FP>::Zero() };
+    const static inline srl::Vector3<FP> gravityDirection { 0, 0, -1 };
+    // NOLINTNEXTLINE
     srl::model::RobotModel<FP> model { chain::jointRotAxes<FP>,
                                        chain::frameCoos<FP>,
                                        chain::masses<FP>,
                                        chain::linkCoM<FP>,
-                                       chain::principalInertias<FP>,
-                                       chain::rotationOfPrincipalAxes<FP>,
+                                       chain::inertias<FP>,
                                        chain::damping<FP>,
                                        basePose,
                                        gravityDirection,
                                        true };
 
-    srl::Map<const srl::VectorX<FP>> damping { chain::damping<FP>.data(), static_cast<srl::uint>(chain::damping<FP>.size()) };
 #ifndef NDEBUG
-    size_t size { 10 };
+    const static inline size_t size { 10 };
 #else
-    size_t size { 1'000 };
+    const static inline size_t size { 1'000 };
 #endif
-    srl::uint nJoints { this->model.getNumberOfJoints() };
-    srl::vector<srl::VectorX<FP>> qSet { srl::utils::getRandVectors<FP>(size, nJoints, -srl::kPI<FP>, srl::kPI<FP>) };
-    FP delta { 1e-5 };
-    FP aTol { 1e-5 };
-    FP rTol { 1e-3 };
+    const static inline FP half { 0.5 };
+    const static inline srl::uint nJoints { chain::numLinks };
+    const srl::Map<const srl::VectorX<FP>> damping { chain::damping<FP>.data(), static_cast<srl::uint>(chain::damping<FP>.size()) };
+    const static inline srl::vector<srl::VectorX<FP>> qSet { srl::utils::getRandVectors<FP>(size, nJoints, -srl::kPI<FP>, srl::kPI<FP>) };
+    FP delta { 1e-5 };    // NOLINT
+    FP aTol { 1e-5 };     // NOLINT
+    FP rTol { 1e-3 };     // NOLINT
 };
 
-TEST_F(TestDerivatives, TestMassMatrix)
+TEST_F(TestDerivatives, TestMassMatrix)    // NOLINT
 {
     // Test numerically the calculation of mass matrix derivatives (getEomParams).
     for (size_t idx = 0; idx < size; idx += 1) {
-        auto &q { qSet[idx] };
+        const auto &q { qSet[idx] };
         auto mm { std::get<0>(model.getEomParams(q)) };
         srl::vector<srl::MatrixX<FP>> actual;
         std::transform(mm.begin() + 1, mm.end(), std::back_inserter(actual), [](auto &m) -> srl::MatrixX<FP> { return m; });
@@ -325,13 +326,13 @@ TEST_F(TestDerivatives, TestMassMatrix)
     }
 }
 
-TEST_F(TestDerivatives, TestPotEnergy)
+TEST_F(TestDerivatives, TestPotEnergy)    // NOLINT
 {
     // Test numerically the calculation of potential energy derivatives (getEomParams).
-    delta = 1e-7;
-    rTol  = 5e-2;
+    delta = 1e-7;    // NOLINT
+    rTol  = 5e-2;    // NOLINT
     for (size_t idx = 0; idx < size; idx += 1) {
-        auto &q { qSet[idx] };
+        const auto &q { qSet[idx] };
         srl::VectorX<FP> actual { std::get<2>(model.getEomParams(q)).tail(nJoints) };
         for (srl::uint iJoint = 0; iJoint < nJoints; iJoint += 1) {
             srl::VectorX<FP> h { q };
@@ -342,18 +343,18 @@ TEST_F(TestDerivatives, TestPotEnergy)
     }
 }
 
-TEST_F(TestDerivatives, TestChristoffelSymbols)
+TEST_F(TestDerivatives, TestChristoffelSymbols)    // NOLINT
 {
     // Test the calculation of Christoffel symbols (getEomParams).
     for (size_t idx = 0; idx < size; idx += 1) {
-        auto &q { qSet[idx] };
+        const auto &q { qSet[idx] };
         auto eomParams { model.getEomParams(q) };
         auto mm { std::get<0>(eomParams) };
         auto chs { std::get<1>(eomParams) };
         for (srl::uint i = 0; i < nJoints; i += 1) {
             for (srl::uint j = 0; j < nJoints; j += 1) {
                 for (srl::uint k = 0; k < nJoints; k += 1) {
-                    FP expected_ijk { 0.5 * (mm[1 + k](i, j) + mm[1 + j](i, k) - mm[1 + i](j, k)) };
+                    FP expected_ijk { half * (mm[1 + k](i, j) + mm[1 + j](i, k) - mm[1 + i](j, k)) };
                     EXPECT_TRUE(srl::math::eq(chs[i](j, k), expected_ijk, rTol, aTol));
                 }
             }
@@ -361,11 +362,11 @@ TEST_F(TestDerivatives, TestChristoffelSymbols)
     }
 }
 
-TEST_F(TestDerivatives, TestMotorTorques)
+TEST_F(TestDerivatives, TestMotorTorques)    // NOLINT
 {
     // Test the calculation of motor torques (getAngularAcceleration).
     for (size_t idx = 0; idx < size; idx += 1) {
-        auto &q { qSet[idx] };
+        const auto &q { qSet[idx] };
         srl::VectorX<FP> actual { model.getMotorTorque(q, q, q) };
         auto [mm, chs, pe] { model.getEomParams(q) };
         srl::VectorX<FP> expected { mm[0] * q + pe.tail(nJoints) + q.cwiseProduct(damping) };
@@ -376,11 +377,11 @@ TEST_F(TestDerivatives, TestMotorTorques)
     }
 }
 
-TEST_F(TestDerivatives, TestAngularAccelerations)
+TEST_F(TestDerivatives, TestAngularAccelerations)    // NOLINT
 {
     // Test the calculation of angular accelerations (getAngularAcceleration).
     for (size_t idx = 0; idx < size; idx += 1) {
-        auto &q { qSet[idx] };
+        const auto &q { qSet[idx] };
         srl::VectorX<FP> actual { model.getAngularAcceleration(q, q, q) };
         auto [mm, chs, pe] { model.getEomParams(q) };
         srl::VectorX<FP> expected { q - pe.tail(nJoints) - q.cwiseProduct(damping) };
@@ -394,7 +395,7 @@ TEST_F(TestDerivatives, TestAngularAccelerations)
 
 //
 // =============== =============== Main
-int main(int argc, char **argv)
+auto main(int argc, char **argv) -> int
 {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

@@ -30,7 +30,7 @@ protected:
     const static inline srl::Vector3d baseTran { 1, 2, 3 };
     const static inline srl::QuatVec3d baseQV3 { baseRot, baseTran };
 
-    static inline srl::model::RobotModeld model { kJoints };
+    srl::model::RobotModeld model { kJoints };    // NOLINT
 };
 
 TestKinematics::TestKinematics()
@@ -49,8 +49,8 @@ class TestKinematicsType : public TestKinematics
 {
 protected:
     TestKinematicsType();
-    Cont jAngles;
-    Cont jAnglesBad;
+    Cont jAngles;       // NOLINT
+    Cont jAnglesBad;    // NOLINT
 };
 TYPED_TEST_SUITE(TestKinematicsType, Indexables, );
 
@@ -70,24 +70,24 @@ TestKinematicsType<Cont>::TestKinematicsType()
     }
 }
 
-TYPED_TEST(TestKinematicsType, InputType_fk)
+TYPED_TEST(TestKinematicsType, InputType_fk)    // NOLINT
 {
     // Testing argument acceptation of fk and fkQuat
-    EXPECT_NO_THROW(this->model.fkQuat(this->jAngles));
-    EXPECT_NO_THROW(this->model.fk(this->jAngles));
-    EXPECT_NO_THROW(this->model.fkAllQuat(this->jAngles));
-    EXPECT_NO_THROW(this->model.fkAll(this->jAngles));
+    EXPECT_NO_THROW(this->model.fkQuat(this->jAngles));       // NOLINT
+    EXPECT_NO_THROW(this->model.fk(this->jAngles));           // NOLINT
+    EXPECT_NO_THROW(this->model.fkAllQuat(this->jAngles));    // NOLINT
+    EXPECT_NO_THROW(this->model.fkAll(this->jAngles));        // NOLINT
 #ifndef NDEBUG
-    EXPECT_THROW(this->model.fkQuat(this->jAnglesBad), std::invalid_argument);
-    EXPECT_THROW(this->model.fk(this->jAnglesBad), std::invalid_argument);
-    EXPECT_THROW(this->model.fkAllQuat(this->jAnglesBad), std::invalid_argument);
-    EXPECT_THROW(this->model.fkAll(this->jAnglesBad), std::invalid_argument);
+    EXPECT_THROW(this->model.fkQuat(this->jAnglesBad), std::invalid_argument);       // NOLINT
+    EXPECT_THROW(this->model.fk(this->jAnglesBad), std::invalid_argument);           // NOLINT
+    EXPECT_THROW(this->model.fkAllQuat(this->jAnglesBad), std::invalid_argument);    // NOLINT
+    EXPECT_THROW(this->model.fkAll(this->jAnglesBad), std::invalid_argument);        // NOLINT
 #endif
 }
 
 //
 // =============== =============== Calculation Tests
-auto jointAngles { ::testing::Values(
+const auto jointAngles { ::testing::Values(
   srl::vector { 0., 0., 0. },
   srl::vector { srl::kPId / 6, srl::kPId / 6, srl::kPId / 6 },
   srl::vector { srl::kPId / 4, srl::kPId / 4, srl::kPId / 4 },
@@ -99,9 +99,9 @@ class TestKinematicsCalc
     , public ::testing::WithParamInterface<srl::vector<double>>
 {
 protected:
-    auto calculateFk(srl::vector<double> &angles, srl::Matrix3d rot = srl::kMatrixId3d, srl::Vector3d tran = srl::Vector3d::Zero())
+    static auto calculateFk(srl::vector<double> &angles, srl::Matrix3d rot = srl::kMatrixId3d, srl::Vector3d tran = srl::Vector3d::Zero())
       -> std::pair<srl::Matrix3d, srl::Vector3d>;
-    auto calculateFkAll(srl::vector<double> &angles, srl::Matrix3d rot = srl::kMatrixId3d, srl::Vector3d tran = srl::Vector3d::Zero())
+    static auto calculateFkAll(srl::vector<double> &angles, srl::Matrix3d rot = srl::kMatrixId3d, srl::Vector3d tran = srl::Vector3d::Zero())
       -> srl::vector<std::pair<srl::Matrix3d, srl::Vector3d>>;
 };
 
@@ -131,7 +131,7 @@ auto TestKinematicsCalc::calculateFkAll(srl::vector<double> &angles, srl::Matrix
 }
 
 // --------------- simple FK
-TEST_P(TestKinematicsCalc, fkRobotBase)
+TEST_P(TestKinematicsCalc, fkRobotBase)    // NOLINT
 {
     // Testing fk and fkQuat w.r.t the robot base
     auto angles { GetParam() };
@@ -146,9 +146,9 @@ TEST_P(TestKinematicsCalc, fkRobotBase)
     EXPECT_TRUE(actualTf.linear().isApprox(expectedRot, srl::kEpsd));
     EXPECT_TRUE(actualTf.translation().isApprox(expectedTran, srl::kEpsd));
 }
-INSTANTIATE_TEST_SUITE_P(Test_fkRobotBase, TestKinematicsCalc, jointAngles);
+INSTANTIATE_TEST_SUITE_P(Test_fkRobotBase, TestKinematicsCalc, jointAngles);    // NOLINT
 
-TEST_P(TestKinematicsCalc, fkBase)
+TEST_P(TestKinematicsCalc, fkBase)    // NOLINT
 {
     // Testing fk and fkQuat w.r.t the the origin
     auto angles { GetParam() };
@@ -163,10 +163,10 @@ TEST_P(TestKinematicsCalc, fkBase)
     EXPECT_TRUE(actualTf.linear().isApprox(expectedRot, srl::kEpsd));
     EXPECT_TRUE(actualTf.translation().isApprox(expectedTran, srl::kEpsd));
 }
-INSTANTIATE_TEST_SUITE_P(Test_fkBase, TestKinematicsCalc, jointAngles);
+INSTANTIATE_TEST_SUITE_P(Test_fkBase, TestKinematicsCalc, jointAngles);    // NOLINT
 
 // --------------- all FK
-TEST_P(TestKinematicsCalc, fkAllBase)
+TEST_P(TestKinematicsCalc, fkAllBase)    // NOLINT
 {
     // Testing fkAll
     auto angles { GetParam() };
@@ -185,9 +185,9 @@ TEST_P(TestKinematicsCalc, fkAllBase)
         EXPECT_TRUE(actualTfs[idx].translation().isApprox(expected[idx].second, srl::kEpsd));
     }
 }
-INSTANTIATE_TEST_SUITE_P(Test_fkAllBase, TestKinematicsCalc, jointAngles);
+INSTANTIATE_TEST_SUITE_P(Test_fkAllBase, TestKinematicsCalc, jointAngles);    // NOLINT
 
-TEST_P(TestKinematicsCalc, fkAll)
+TEST_P(TestKinematicsCalc, fkAll)    // NOLINT
 {
     // Testing fkAll
     auto angles { GetParam() };
@@ -206,11 +206,11 @@ TEST_P(TestKinematicsCalc, fkAll)
         EXPECT_TRUE(actualTfs[idx].translation().isApprox(expected[idx].second, srl::kEpsd));
     }
 }
-INSTANTIATE_TEST_SUITE_P(Test_fkAll, TestKinematicsCalc, jointAngles);
+INSTANTIATE_TEST_SUITE_P(Test_fkAll, TestKinematicsCalc, jointAngles);    // NOLINT
 
 //
 // =============== =============== Main
-int main(int argc, char **argv)
+auto main(int argc, char **argv) -> int
 {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
