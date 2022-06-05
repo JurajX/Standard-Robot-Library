@@ -11,10 +11,11 @@
 #include <iostream>
 #include <tuple>
 
-int main(int, char *[])
+auto main(int /*argc*/, char ** /*argv*/) -> int    // NOLINT (bugprone-exception-escape)
 {
     fmt::print("----- Start of the example.\n");
 
+    // =============== =============== Common Definitions
     using FP = double;
     srl::model::RobotModel<FP> model {
         srl::resources::panda::jointRotAxes<FP>, srl::resources::panda::frameCoos<FP>,         srl::resources::panda::masses<FP>,
@@ -22,14 +23,18 @@ int main(int, char *[])
         srl::resources::panda::damping<FP>
     };
     size_t nDoF { model.getNumberOfJoints() };
+    const srl::vector<FP> q(nDoF, 1.1);
+    const srl::vector<FP> dq(nDoF, 1.1);
+    const srl::vector<FP> ddq(nDoF, 1.1);
+    const srl::vector<FP> mot(nDoF, 1.1);
 
     //
     // =============== =============== Kinematics Examples
 
+    fmt::print("\n----- ----- Example for fkQuat.\n");
     {
         /// [example_fkQuat]
         // srl::model::RobotModel<FP> model { /* ... model parameters for nDoF robot ... */ };
-        srl::vector<FP> q(nDoF, 1.1);
         srl::QuatVec3<FP> flange { model.fkQuat(q) };
         std::cout << "The rotation of the flange is " << flange.first << ".\n";
         std::cout << "The position of the flange is " << flange.second.transpose() << ".\n";
@@ -42,10 +47,10 @@ int main(int, char *[])
         /// [example_fkQuat_output]
     }
 
+    fmt::print("\n----- ----- Example for fk.\n");
     {
         /// [example_fk]
         // srl::model::RobotModel<FP> model { /* ... model parameters for nDoF robot ... */ };
-        srl::vector<FP> q(nDoF, 1.1);
         srl::Transform3<FP> flange { model.fk(q) };
         std::cout << "The rotation of the flange is\n" << flange.linear() << "\n";
         std::cout << "The position of the flange is " << flange.translation().transpose() << ".\n";
@@ -61,10 +66,10 @@ int main(int, char *[])
         /// [example_fk_output]
     }
 
+    fmt::print("\n----- ----- Example for fkAllQuat.\n");
     {
         /// [example_fkAllQuat]
         // srl::model::RobotModel<FP> model { /* ... model parameters for nDoF robot ... */ };
-        srl::vector<FP> q(nDoF, 1.1);
         auto link_frames { model.fkAllQuat(q) };
         std::cout << "The size of the link_frames vector is " << link_frames.size() << ".\n";
         std::cout << "The rotation of the flange is " << link_frames.back().first << ".\n";
@@ -79,10 +84,10 @@ int main(int, char *[])
         /// [example_fkAllQuat_output]
     }
 
+    fmt::print("\n----- ----- Example for fkAll.\n");
     {
         /// [example_fkAll]
         // srl::model::RobotModel<FP> model { /* ... model parameters for nDoF robot ... */ };
-        srl::vector<FP> q(nDoF, 1.1);
         auto link_frames { model.fkAll(q) };
         std::cout << "The size of the link_frames vector is " << link_frames.size() << ".\n";
         std::cout << "The rotation of the flange is\n" << link_frames.back().linear() << "\n";
@@ -103,10 +108,10 @@ int main(int, char *[])
     //
     // =============== =============== Dynamics Examples
 
+    fmt::print("\n----- ----- Example for getMassMatrixAndPotEnergy.\n");
     {
         /// [example_getMassMatrixAndPotEnergy]
         // srl::model::RobotModel<FP> model { /* ... model parameters for nDoF robot ... */ };
-        srl::vector<FP> q(nDoF, 1.1);
         auto [mass_matrix, potential_energy] { model.getMassMatrixAndPotEnergy(q) };
         fmt::print("The size of mass_matrix is {}x{}.\n", mass_matrix.rows(), mass_matrix.cols());
         fmt::print("The value of potential_energy of the system for the given parameters is: {}.\n", potential_energy);
@@ -119,11 +124,10 @@ int main(int, char *[])
         /// [example_getMassMatrixAndPotEnergy_output]
     }
 
+    fmt::print("\n----- ----- Example for getLagrangian.\n");
     {
         /// [example_getLagrangian]
         // srl::model::RobotModel<FP> model { /* ... model parameters for nDoF robot ... */ };
-        srl::vector<FP> q(nDoF, 1.1);
-        srl::vector<FP> dq(nDoF, 1.1);
         double lagrangian { model.getLagrangian(q, dq) };
         fmt::print("The value of Lagrangian of the system for the given parameters is: {}.\n", lagrangian);
         /// [example_getLagrangian]
@@ -134,10 +138,10 @@ int main(int, char *[])
         /// [example_getLagrangian_output]
     }
 
+    fmt::print("\n----- ----- Example for getEomParams.\n");
     {
         /// [example_getEomParams]
         // srl::model::RobotModel<FP> model { /* ... model parameters for nDoF robot ... */ };
-        srl::vector<FP> q(nDoF, 1.1);
         auto [mass_matrix, christoffel_symbols, potential_energy] { model.getEomParams(q) };
         fmt::print(
           "The size of mass_matrix is {}, size of the inner matrices is {}x{}.\n",
@@ -160,12 +164,10 @@ int main(int, char *[])
         /// [example_getEomParams_output]
     }
 
+    fmt::print("\n----- ----- Example for getMotorTorque.\n");
     {
         /// [example_getMotorTorque]
         // srl::model::RobotModel<FP> model { /* ... model parameters for nDoF robot ... */ };
-        srl::vector<FP> q(nDoF, 1.1);
-        srl::vector<FP> dq(nDoF, 1.1);
-        srl::vector<FP> ddq(nDoF, 1.1);
         srl::VectorX<FP> motor_torques { model.getMotorTorque(q, dq, ddq) };
         std::cout << "The motor torques needed for sustaining the given q, dq, and ddq are: \n" << motor_torques.transpose() << "\n";
         /// [example_getMotorTorque]
@@ -177,12 +179,10 @@ int main(int, char *[])
         /// [example_getMotorTorque_output]
     }
 
+    fmt::print("\n----- ----- Example for getAngularAcceleration.\n");
     {
         /// [example_getAngularAcceleration]
         // srl::model::RobotModel<FP> model { /* ... model parameters for nDoF robot ... */ };
-        srl::vector<FP> q(nDoF, 1.1);
-        srl::vector<FP> dq(nDoF, 1.1);
-        srl::vector<FP> mot(nDoF, 1.1);
         srl::VectorX<FP> angular_accelerations { model.getAngularAcceleration(q, dq, mot) };
         std::cout << "The resulting angular accelerations when in the state q, dq and applying the given motor torques are: \n"
                   << angular_accelerations.transpose() << "\n";
@@ -195,10 +195,10 @@ int main(int, char *[])
         /// [example_getAngularAcceleration_output]
     }
 
+    fmt::print("\n----- ----- Example for getJacobian.\n");
     {
         /// [example_getJacobian]
         // srl::model::RobotModel<FP> model { /* ... model parameters for nDoF robot ... */ };
-        srl::vector<FP> q(nDoF, 1.1);
         auto [jacobian_rot, jacobian_tran] { model.getJacobian(q) };
         fmt::print(
           "The size of jacobian_rot is {}, size of the inner matrices is {}x{}.\n",

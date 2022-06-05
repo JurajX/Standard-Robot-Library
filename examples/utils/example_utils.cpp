@@ -7,13 +7,20 @@
 
 #include <iostream>
 
-int main(int, char *[])
+auto main(int /*argc*/, char ** /*argv*/) -> int
 {
     fmt::print("----- Start of the example.\n");
 
+    const size_t set_size { 3 };
+    const size_t vec_size { 5 };
+    const double min { 0.0 };
+    const double max { 10.0 };
+    const bool deterministic { true };
+
+    fmt::print("\n----- ----- Example for getRandVectors.\n");
     {
         /// [example_getRandVectors]
-        auto res { srl::utils::getRandVectors(3, 5, 0.0, 10.0, true) };
+        auto res { srl::utils::getRandVectors(set_size, vec_size, min, max, deterministic) };
         std::cout << "The randomly generated set of size 3 with vector size 5 and elements in the range [0, 10] is:\n";
         for (auto &vec : res) {
             std::cout << vec.transpose() << '\n';
