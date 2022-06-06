@@ -5,54 +5,20 @@
 #include <srl/concepts.hpp>
 #include <srl/types.hpp>
 
+#include <chrono>
 #include <string_view>
 #include <tuple>
 
 namespace srl::utils {
 
 /**
- * @brief Time a member function taking multiple arguments.
+ * @brief Format duration into an appropriate unit and print it together with the message.
  *
- * @tparam Fn The function type.
- * @tparam Obj The object type to which the function belongs to.
- * @tparam Args Variadic template for the function argument types.
- * @param msg The message to be printed.
- * @param m_fn The member function to time.
- * @param obj The object instance having the member function.
- * @param args_vec A vector of argument tuples the function is timed on.
+ * @param duration The duration to format.
+ * @param n Number of iterations (duration will be devided by this number).
+ * @param msg The message to print with the given duration
  */
-template<class Fn, class Obj, class... Args>
-requires srl::concepts::invocable<Fn, Obj, Args...>
-auto timeMemberFn(std::string_view msg, Fn &&m_fn, Obj obj, srl::vector<std::tuple<Args...>> &args_vec) -> void;
-
-/**
- * @brief Time a member function taking a single argument.
- *
- * @tparam Fn The function type.
- * @tparam Obj The object type to which the function belongs to.
- * @tparam Arg The function argument type.
- * @param msg The message to be printed.
- * @param m_fn The member function to time.
- * @param obj The object instance having the member function.
- * @param arg_vec A vector of arguments the function is timed on.
- */
-template<class Fn, class Obj, class Arg>
-requires srl::concepts::invocable<Fn, Obj, Arg>
-auto timeMemberFn(std::string_view msg, Fn &&m_fn, Obj obj, srl::vector<Arg> &arg_vec) -> void;
-
-/**
- * @brief Time a member function taking no arguments.
- *
- * @tparam Fn The function type.
- * @tparam Obj The object type to which the function belongs to.
- * @param msg The message to be printed.
- * @param m_fn The member function to time.
- * @param obj The object instance having the member function.
- * @param n The number of iterations the function is timed on.
- */
-template<class Fn, class Obj>
-requires srl::concepts::invocable<Fn, Obj>
-auto timeMemberFn(std::string_view msg, Fn &&m_fn, Obj obj, size_t &n) -> void;
+auto printDuration(const std::chrono::duration<double, std::nano> &duration, const size_t &n, std::string_view msg) -> void;
 
 /**
  * @brief Time a function taking multiple arguments.
@@ -70,6 +36,11 @@ auto timeFn(std::string_view msg, Fn &&fn, srl::vector<std::tuple<Args...>> &arg
 /**
  * @brief Time a function taking a single argument.
  *
+ * **Example**
+ * \snippet example_utils.cpp example_timeFn1
+ * **Possible Example Output**
+ * \snippet example_utils.cpp example_timeFn1_output
+ *
  * @tparam Fn The function type.
  * @tparam Arg The function argument type.
  * @param msg The message to be printed.
@@ -83,6 +54,11 @@ auto timeFn(std::string_view msg, Fn &&fn, srl::vector<Arg> &arg_vec) -> void;
 /**
  * @brief Time a function taking no arguments.
  *
+ * **Example**
+ * \snippet example_utils.cpp example_timeFn0
+ * **Possible Example Output**
+ * \snippet example_utils.cpp example_timeFn0_output
+ *
  * @tparam Fn The function type.
  * @param msg The message to be printed.
  * @param fn The function to time.
@@ -90,7 +66,7 @@ auto timeFn(std::string_view msg, Fn &&fn, srl::vector<Arg> &arg_vec) -> void;
  */
 template<class Fn>
 requires srl::concepts::invocable<Fn>
-auto timeFn(std::string_view msg, Fn &&fn, size_t &n) -> void;
+auto timeFn(std::string_view msg, Fn &&fn, const size_t &n) -> void;
 
 }    // namespace srl::utils
 

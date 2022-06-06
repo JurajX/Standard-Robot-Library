@@ -15,44 +15,51 @@ using FPtypes = ::testing::Types<float, double>;
 // ----- ----- ----- ----- ----- ----- ----- floating point functions
 template<srl::concepts::floating_point FP>
 class TestEq : public ::testing::Test
-{ };
-TYPED_TEST_SUITE(TestEq, FPtypes);
+{
+protected:
+    const FP zero { 0 };
+    const static inline FP precision1 { static_cast<FP>(0.1) };
+    const static inline FP precision2 { static_cast<FP>(0.001) };
+};
+TYPED_TEST_SUITE(TestEq, FPtypes, );
 
-TYPED_TEST(TestEq, Eq)
+TYPED_TEST(TestEq, Eq)    // NOLINT
 {
     // Test the floating point equal (eq) fn.
     // set-up
     using FP = TypeParam;
-    auto a { static_cast<FP>(0.0) };
-    auto b { static_cast<FP>(0.01) };
-    auto precision1 { static_cast<FP>(0.1) };
-    auto precision2 { static_cast<FP>(0.001) };
+    const FP a { this->zero };
+    const FP b { static_cast<FP>(0.01) };
     // run
     // check
-    EXPECT_TRUE(srl::math::eq<FP>(a, b, 0, precision1));
-    EXPECT_FALSE(srl::math::eq<FP>(a, b, 0, precision2));
+    EXPECT_TRUE(srl::math::eq<FP>(a, b, this->zero, this->precision1));
+    EXPECT_FALSE(srl::math::eq<FP>(a, b, this->zero, this->precision2));
 }
 
 // ----- ----- ----- ----- ----- ----- ----- matrix functions
 template<srl::concepts::floating_point FP>
 class TestMatEq : public ::testing::Test
-{ };
-TYPED_TEST_SUITE(TestMatEq, FPtypes);
+{
+protected:
+    const FP zero { 0 };
+    const static inline FP precision1 { static_cast<FP>(0.1) };
+    const static inline FP precision2 { static_cast<FP>(0.001) };
+};
+TYPED_TEST_SUITE(TestMatEq, FPtypes, );
 
-TYPED_TEST(TestMatEq, MatEq)
+TYPED_TEST(TestMatEq, MatEq)    // NOLINT
 {
     // Test the matrix equal (matEq) fn.
     // set-up
     using FP = TypeParam;
-    srl::MatrixX<FP> a { srl::MatrixX<FP>::Zero(10, 10) };
-    srl::MatrixX<FP> b { srl::MatrixX<FP>::Zero(10, 10) };
-    b.array() = static_cast<FP>(0.001);    // norm is 0.01
-    auto precision1 { static_cast<FP>(0.1) };
-    auto precision2 { static_cast<FP>(0.001) };
+    const srl::uint dim { 10 };
+    srl::MatrixX<FP> a { srl::MatrixX<FP>::Zero(dim, dim) };
+    srl::MatrixX<FP> b { srl::MatrixX<FP>::Zero(dim, dim) };
+    b.array() = this->precision2;    // norm is sqrt(dim^2 * precision2^2)
     // run
     // check
-    EXPECT_TRUE(srl::math::matEq(a, b, 0, precision1));
-    EXPECT_FALSE(srl::math::matEq(a, b, 0, precision2));
+    EXPECT_TRUE(srl::math::matEq(a, b, this->zero, this->precision1));
+    EXPECT_FALSE(srl::math::matEq(a, b, this->zero, this->precision2));
 }
 
 // ----- ----- ----- ----- ----- ----- ----- Lie group functions
@@ -60,26 +67,26 @@ template<srl::concepts::floating_point FP>
 class TestRotation : public ::testing::Test
 {
 protected:
-    FP piHalf { srl::kPI<FP> / 2 };
-    srl::Matrix3<FP> rotByPiHalfAroundX {
+    const FP piHalf { srl::kPI<FP> / 2 };
+    const srl::Matrix3<FP> rotByPiHalfAroundX {
         {1, 0,  0},
         {0, 0, -1},
         {0, 1,  0}
     };
-    srl::Matrix3<FP> rotByPiHalfAroundY {
+    const srl::Matrix3<FP> rotByPiHalfAroundY {
         { 0, 0, 1},
         { 0, 1, 0},
         {-1, 0, 0}
     };
-    srl::Matrix3<FP> rotByPiHalfAroundZ {
+    const srl::Matrix3<FP> rotByPiHalfAroundZ {
         {0, -1, 0},
         {1,  0, 0},
         {0,  0, 1}
     };
 };
-TYPED_TEST_SUITE(TestRotation, FPtypes);
+TYPED_TEST_SUITE(TestRotation, FPtypes, );
 
-TYPED_TEST(TestRotation, AngleAxisInputs)
+TYPED_TEST(TestRotation, AngleAxisInputs)    // NOLINT
 {
     // Test the rotation fn with angle and axis arguments.
     // set-up
@@ -93,7 +100,7 @@ TYPED_TEST(TestRotation, AngleAxisInputs)
     EXPECT_TRUE(actualZ.isApprox(this->rotByPiHalfAroundZ, srl::kEps<TypeParam>));
 }
 
-TYPED_TEST(TestRotation, AngleAxisInputsZero)
+TYPED_TEST(TestRotation, AngleAxisInputsZero)    // NOLINT
 {
     // Test the rotation fn with angle and axis arguments.
     // set-up
@@ -106,7 +113,7 @@ TYPED_TEST(TestRotation, AngleAxisInputsZero)
     EXPECT_TRUE(actual2.isApprox(srl::kMatrixId3<TypeParam>, srl::kEps<TypeParam>));
 }
 
-TYPED_TEST(TestRotation, RotationVectorInputs)
+TYPED_TEST(TestRotation, RotationVectorInputs)    // NOLINT
 {
     // Test the rotation fn with rotation vector argument.
     // set-up
@@ -120,7 +127,7 @@ TYPED_TEST(TestRotation, RotationVectorInputs)
     EXPECT_TRUE(actualZ.isApprox(this->rotByPiHalfAroundZ, srl::kEps<TypeParam>));
 }
 
-TYPED_TEST(TestRotation, RotationVectorInputsZero)
+TYPED_TEST(TestRotation, RotationVectorInputsZero)    // NOLINT
 {
     // Test the rotation fn with angle and axis arguments.
     // set-up
@@ -136,9 +143,9 @@ TYPED_TEST(TestRotation, RotationVectorInputsZero)
 template<srl::concepts::floating_point FP>
 class TestAdjoint : public TestRotation<FP>
 { };
-TYPED_TEST_SUITE(TestAdjoint, FPtypes);
+TYPED_TEST_SUITE(TestAdjoint, FPtypes, );
 
-TYPED_TEST(TestAdjoint, MatrixMatrixInputs)
+TYPED_TEST(TestAdjoint, MatrixMatrixInputs)    // NOLINT
 {
     // Test the adjoint fn with two matrix agruments.
     // set-up
@@ -152,7 +159,7 @@ TYPED_TEST(TestAdjoint, MatrixMatrixInputs)
     EXPECT_TRUE(actualZ.isApprox(srl::kMatrixId3<TypeParam>, srl::kEps<TypeParam>));
 }
 
-TYPED_TEST(TestAdjoint, VectorMatrixInputs)
+TYPED_TEST(TestAdjoint, VectorMatrixInputs)    // NOLINT
 {
     // Test the adjoint fn with two vector agruments.
     // set-up
@@ -173,9 +180,9 @@ TYPED_TEST(TestAdjoint, VectorMatrixInputs)
 template<srl::concepts::floating_point FP>
 class TestSo3element : public ::testing::Test
 { };
-TYPED_TEST_SUITE(TestSo3element, FPtypes);
+TYPED_TEST_SUITE(TestSo3element, FPtypes, );
 
-TYPED_TEST(TestSo3element, TestCreation)
+TYPED_TEST(TestSo3element, TestCreation)    // NOLINT
 {
     // Test the so3element fn.
     auto actualX { srl::math::so3element(srl::Vector3<TypeParam> { 1, 0, 0 }) };
@@ -195,23 +202,23 @@ template<srl::concepts::floating_point FP>
 class TestInertia : public TestRotation<FP>
 {
 protected:
-    srl::Matrix3<FP> rot { srl::AAxis<FP>(static_cast<FP>(1.2), srl::Vector3<FP> { 1, 2, 3 }.normalized()) };
-    Eigen::DiagonalMatrix<FP, 3> goodPrincipal { 3, 4, 5 };
-    Eigen::DiagonalMatrix<FP, 3> badPrincipal { 1, 4, 5 };
-    Eigen::DiagonalMatrix<FP, 3> notPrincipal { 10, -4, 5 };
-    srl::Matrix3<FP> inertia1 { rot * goodPrincipal * rot.transpose() };
-    srl::Matrix3<FP> inertia2 { this->rotByPiHalfAroundX * goodPrincipal * this->rotByPiHalfAroundX.transpose() };
+    const srl::Matrix3<FP> rot { srl::AAxis<FP>(static_cast<FP>(1.2), srl::Vector3<FP> { 1, 2, 3 }.normalized()) };
+    const Eigen::DiagonalMatrix<FP, 3> goodPrincipal { 3, 4, 5 };
+    const Eigen::DiagonalMatrix<FP, 3> badPrincipal { 1, 4, 5 };
+    const Eigen::DiagonalMatrix<FP, 3> notPrincipal { 10, -4, 5 };
+    const srl::Matrix3<FP> inertia1 { rot * goodPrincipal * rot.transpose() };
+    const srl::Matrix3<FP> inertia2 { this->rotByPiHalfAroundX * goodPrincipal * this->rotByPiHalfAroundX.transpose() };
 
-    srl::Matrix3<FP> onlyPosDef1 { rot * badPrincipal * rot.transpose() };
-    srl::Matrix3<FP> onlyPosDef2 { this->rotByPiHalfAroundZ * badPrincipal * this->rotByPiHalfAroundZ.transpose() };
+    const srl::Matrix3<FP> onlyPosDef1 { rot * badPrincipal * rot.transpose() };
+    const srl::Matrix3<FP> onlyPosDef2 { this->rotByPiHalfAroundZ * badPrincipal * this->rotByPiHalfAroundZ.transpose() };
 
-    srl::Matrix3<FP> notPosDef1 { this->rotByPiHalfAroundX * goodPrincipal * this->rotByPiHalfAroundZ.transpose() };
-    srl::Matrix3<FP> notPosDef2 { rot * badPrincipal * this->rotByPiHalfAroundZ.transpose() };
-    srl::Matrix3<FP> notPosDef3 { rot * notPrincipal * rot.transpose() };
+    const srl::Matrix3<FP> notPosDef1 { this->rotByPiHalfAroundX * goodPrincipal * this->rotByPiHalfAroundZ.transpose() };
+    const srl::Matrix3<FP> notPosDef2 { rot * badPrincipal * this->rotByPiHalfAroundZ.transpose() };
+    const srl::Matrix3<FP> notPosDef3 { rot * notPrincipal * rot.transpose() };
 };
-TYPED_TEST_SUITE(TestInertia, FPtypes);
+TYPED_TEST_SUITE(TestInertia, FPtypes, );
 
-TYPED_TEST(TestInertia, TestIsPositiveDefinite)
+TYPED_TEST(TestInertia, TestIsPositiveDefinite)    // NOLINT
 {
     // Test the isPositiveDefinite fn.
     EXPECT_TRUE(srl::math::isPositiveDefinite(this->inertia1));
@@ -223,7 +230,7 @@ TYPED_TEST(TestInertia, TestIsPositiveDefinite)
     EXPECT_FALSE(srl::math::isPositiveDefinite(this->notPosDef3));
 }
 
-TYPED_TEST(TestInertia, TestIsInertia)
+TYPED_TEST(TestInertia, TestIsInertia)    // NOLINT
 {
     // Test the isInertia fn.
     EXPECT_TRUE(srl::math::isInertia(this->inertia1));
@@ -239,15 +246,15 @@ template<srl::concepts::floating_point FP>
 class TestSVD : public ::testing::Test
 {
 protected:
-    srl::Matrix3<FP> mat {
+    const static inline srl::Matrix3<FP> mat {
         {1, 2, 3},
         {4, 5, 6},
         {7, 8, 9}
     };
 };
-TYPED_TEST_SUITE(TestSVD, FPtypes);
+TYPED_TEST_SUITE(TestSVD, FPtypes, );
 
-TYPED_TEST(TestSVD, TestSVD)
+TYPED_TEST(TestSVD, TestSVD)    // NOLINT
 {
     // Test the singular value decomposition (svd) fn.
     // set-up
@@ -258,7 +265,7 @@ TYPED_TEST(TestSVD, TestSVD)
     EXPECT_TRUE(actual.isApprox(this->mat, srl::kEps<TypeParam>));
 }
 
-int main(int argc, char **argv)
+auto main(int argc, char **argv) -> int
 {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

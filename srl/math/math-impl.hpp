@@ -104,7 +104,7 @@ auto adjoint(const srl::Vector3<FP> &diagonal, const srl::Matrix3<FP> &rotation)
 template<srl::concepts::floating_point FP>
 auto so3element(const srl::Vector3<FP> &vec) -> srl::Matrix3<FP>
 {
-    return { vec[0] * srl::kSo3<FP>[0] + vec[1] * srl::kSo3<FP>[1] + vec[2] * srl::kSo3<FP>[2] };
+    return srl::Matrix3<FP> { vec[0] * srl::kSo3<FP>[0] + vec[1] * srl::kSo3<FP>[1] + vec[2] * srl::kSo3<FP>[2] };
 }
 
 }    // namespace srl::math

@@ -1,6 +1,3 @@
-include(gtest)
-include(add_compile_options)
-
 function(add_exe)
     set(options CXX_STANDARD_REQUIRED CXX_EXTENSIONS_OFF TEST)
     set(oneValueArgs NAME CXX_STANDARD)
@@ -12,26 +9,29 @@ function(add_exe)
         ${EXE_NAME}.cpp
         ${EXE_SRCS}
     )
-    add_compile_options(
-        TARGET ${EXE_NAME}
-        OPTIM_OPTIONS ${EXE_OPTIM_OPTIONS}
-    )
 
-    if(EXE_LINK_LIBRARIES)
+    if(DEFINED EXE_OPTIM_OPTIONS)
+        add_compile_options(
+            TARGET ${EXE_NAME}
+            OPTIM_OPTIONS ${EXE_OPTIM_OPTIONS}
+        )
+    endif(DEFINED EXE_OPTIM_OPTIONS)
+
+    if(DEFINED EXE_LINK_LIBRARIES)
         target_link_libraries(
             ${EXE_NAME}
             PUBLIC ${EXE_LINK_LIBRARIES}
         )
-    endif(EXE_LINK_LIBRARIES)
+    endif(DEFINED EXE_LINK_LIBRARIES)
 
-    if(EXE_CXX_STANDARD)
+    if(DEFINED EXE_CXX_STANDARD)
         set_target_properties(
             ${EXE_NAME} PROPERTIES
             CXX_STANDARD ${EXE_CXX_STANDARD}
             CXX_STANDARD_REQUIRED ${EXE_CXX_STANDARD_REQUIRED}
             CXX_EXTENSIONS $<NOT:${EXE_CXX_EXTENSIONS_OFF}>
         )
-    endif(EXE_CXX_STANDARD)
+    endif(DEFINED EXE_CXX_STANDARD)
 
     if(EXE_TEST)
         target_link_libraries(

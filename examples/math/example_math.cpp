@@ -7,11 +7,12 @@
 
 #include <iostream>
 
-int main(int, char *[])
+auto main(int /*argc*/, char ** /*argv*/) -> int
 {
     fmt::print("----- Start of the example.\n");
 
-    {
+    fmt::print("\n----- ----- Example for eq.\n");
+    {    // NOLINTBEGIN
         /// [example_eq]
         bool res1 { srl::math::eq(0.0, 0.01, 0., 0.1) };
         bool res2 { srl::math::eq(0.0, 0.01, 0., 0.001) };
@@ -24,12 +25,14 @@ int main(int, char *[])
          - res2 is false.
         */
         /// [example_eq_output]
-    }
+    }    // NOLINTEND
 
-    {
+    fmt::print("\n----- ----- Example for matEq.\n");
+    {    // NOLINTBEGIN
         /// [example_matEq]
-        srl::MatrixXd a { srl::MatrixXd::Zero(10, 10) };
-        srl::MatrixXd b { srl::MatrixXd::Zero(10, 10) };
+        const srl::uint dim { 10 };
+        srl::MatrixXd a { srl::MatrixXd::Zero(dim, dim) };
+        srl::MatrixXd b { srl::MatrixXd::Zero(dim, dim) };
         b.array() = 0.001;    // norm is 0.01
         bool res1 { srl::math::matEq(a, b, 0., 0.1) };
         bool res2 { srl::math::matEq(a, b, 0., 0.001) };
@@ -42,8 +45,9 @@ int main(int, char *[])
          - res2 is false.
         */
         /// [example_matEq_output]
-    }
+    }    // NOLINTEND
 
+    fmt::print("\n----- ----- Example for isPositiveDefinite.\n");
     {
         /// [example_isPositiveDefinite]
         bool res1 { srl::math::isPositiveDefinite<srl::Matrix3d>(srl::kMatrixId3d) };
@@ -59,9 +63,10 @@ int main(int, char *[])
         /// [example_isPositiveDefinite_output]
     }
 
+    fmt::print("\n----- ----- Example for svd.\n");
     {
         /// [example_svd]
-        srl::Matrix3d mat {
+        const srl::Matrix3d mat {
             {1, 2, 3},
             {4, 5, 6},
             {7, 8, 9}
@@ -79,9 +84,10 @@ int main(int, char *[])
         /// [example_svd_output]
     }
 
+    fmt::print("\n----- ----- Example for isInertia.\n");
     {
         /// [example_isInertia]
-        srl::Matrix3d mat {
+        const srl::Matrix3d mat {
             {1, 0, 0},
             {0, 2, 0},
             {0, 0, 4}
@@ -99,6 +105,7 @@ int main(int, char *[])
         /// [example_isInertia_output]
     }
 
+    fmt::print("\n----- ----- Example for rotation1.\n");
     {
         /// [example_rotation1]
         auto res { srl::math::rotation<double>(srl::kPId / 2, srl::Vector3d::UnitZ()) };
@@ -114,6 +121,7 @@ int main(int, char *[])
         /// [example_rotation1_output]
     }
 
+    fmt::print("\n----- ----- Example for rotation2.\n");
     {
         /// [example_rotation2]
         srl::Vector3d vec { (srl::kPId / 2) * srl::Vector3d::UnitZ() };
@@ -130,14 +138,15 @@ int main(int, char *[])
         /// [example_rotation2_output]
     }
 
+    fmt::print("\n----- ----- Example for adjoint1.\n");
     {
         /// [example_adjoint1]
-        srl::Matrix3d mat {
+        const srl::Matrix3d mat {
             {1, 0, 0},
             {0, 2, 0},
             {0, 0, 4}
         };
-        srl::Matrix3d rot {
+        const srl::Matrix3d rot {
             {0, -1, 0},
             {1,  0, 0},
             {0,  0, 1}
@@ -156,10 +165,11 @@ int main(int, char *[])
         /// [example_adjoint1_output]
     }
 
+    fmt::print("\n----- ----- Example for adjoint2.\n");
     {
         /// [example_adjoint2]
-        srl::Vector3d vec { 1, 2, 4 };
-        srl::Matrix3d rot {
+        const srl::Vector3d vec { 1, 2, 4 };
+        const srl::Matrix3d rot {
             {0, -1, 0},
             {1,  0, 0},
             {0,  0, 1}
@@ -178,9 +188,10 @@ int main(int, char *[])
         /// [example_adjoint2_output]
     }
 
+    fmt::print("\n----- ----- Example for so3element.\n");
     {
         /// [example_so3element]
-        srl::Vector3d vec { 1, 2, 3 };
+        const srl::Vector3d vec { 1, 2, 3 };
         auto res { srl::math::so3element<double>(vec) };
         std::cout << "The so3 element is:\n" << res << '\n';
         /// [example_so3element]

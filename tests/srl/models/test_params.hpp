@@ -28,10 +28,10 @@ template<srl::concepts::floating_point FP>
 inline const srl::vector<FP> masses { 10. };
 
 template<srl::concepts::floating_point FP>
-inline const srl::Matrix3X<FP> principalInertias { { 3. }, { 4. }, { 5. } };
-
-template<srl::concepts::floating_point FP>
-inline const srl::Matrix3X<FP> rotationOfPrincipalAxes { { 0. }, { 0. }, { 0. } };
+inline const srl::vector<srl::Matrix3<FP>> inertias {
+    srl::Vector3<FP> {3., 4., 5.}
+     .asDiagonal()
+};
 
 template<srl::concepts::floating_point FP>
 inline const srl::vector<FP> damping { 0. };
@@ -75,17 +75,11 @@ inline const srl::Matrix3X<FP> linkCoM {
 };
 
 template<srl::concepts::floating_point FP>
-inline const srl::Matrix3X<FP> principalInertias {
-    {3., 1.2},
-    {4., 2.0},
-    {5., 1.2}
-};
-
-template<srl::concepts::floating_point FP>
-inline const srl::Matrix3X<FP> rotationOfPrincipalAxes {
-    {0., 0.},
-    {0., 0.},
-    {0., 0.}
+inline const srl::vector<srl::Matrix3<FP>> inertias {
+    srl::Vector3<FP> {3., 4., 5.}
+     .asDiagonal(),
+    srl::Vector3<FP> {2., 3., 2.}
+     .asDiagonal()
 };
 
 template<srl::concepts::floating_point FP>
@@ -137,17 +131,15 @@ inline const srl::Matrix3X<FP> linkCoM {
 };
 
 template<srl::concepts::floating_point FP>
-inline const srl::Matrix3X<FP> principalInertias {
-    {1., 2., 3., 4.},
-    {1., 2., 3., 4.},
-    {1., 2., 3., 4.}
-};
-
-template<srl::concepts::floating_point FP>
-inline const srl::Matrix3X<FP> rotationOfPrincipalAxes {
-    {0., 0., 0., 0.},
-    {0., 0., 0., 0.},
-    {0., 0., 0., 0.}
+inline const srl::vector<srl::Matrix3<FP>> inertias {
+    srl::Vector3<FP> {1., 1., 1.}
+     .asDiagonal(),
+    srl::Vector3<FP> {2., 2., 2.}
+     .asDiagonal(),
+    srl::Vector3<FP> {3., 3., 3.}
+     .asDiagonal(),
+    srl::Vector3<FP> {4., 4., 4.}
+     .asDiagonal()
 };
 
 template<srl::concepts::floating_point FP>
@@ -185,17 +177,18 @@ inline const srl::Matrix3X<FP> linkCoM {
 };
 
 template<srl::concepts::floating_point FP>
-inline const srl::Matrix3X<FP> principalInertias {
-    {1., 2., 3., 4., 5., 6., 7., 8.},
-    {1., 2., 3., 4., 5., 6., 7., 8.},
-    {1., 2., 3., 4., 5., 6., 7., 8.}
-};
-
-template<srl::concepts::floating_point FP>
-inline const srl::Matrix3X<FP> rotationOfPrincipalAxes {
-    {0., 0., 0., 0., 0., 0., 0., 0.},
-    {0., 0., 0., 0., 0., 0., 0., 0.},
-    {0., 0., 0., 0., 0., 0., 0., 0.}
+inline const srl::vector<srl::Matrix3<FP>> inertias {
+    srl::Vector3<FP> {1., 1., 1.}
+     .asDiagonal(), srl::Vector3<FP> {2., 2., 2.}
+     .asDiagonal(), srl::Vector3<FP> {3., 3., 3.}
+     .asDiagonal(),
+    srl::Vector3<FP> {4., 4., 4.}
+     .asDiagonal(), srl::Vector3<FP> {5., 5., 5.}
+     .asDiagonal(), srl::Vector3<FP> {6., 6., 6.}
+     .asDiagonal(),
+    srl::Vector3<FP> {7., 7., 7.}
+     .asDiagonal(), srl::Vector3<FP> {8., 8., 8.}
+     .asDiagonal()
 };
 
 template<srl::concepts::floating_point FP>

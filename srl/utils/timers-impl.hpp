@@ -6,53 +6,33 @@
 
 #include <fmt/format.h>
 
-#include <chrono>
 #include <functional>
 #include <iomanip>
 #include <iostream>
 
 namespace srl::utils {
 
-template<class Fn, class Obj, class... Args>
-requires srl::concepts::invocable<Fn, Obj, Args...>
-auto timeMemberFn(std::string_view msg, Fn &&m_fn, Obj obj, srl::vector<std::tuple<Args...>> &args_vec) -> void
+auto printDuration(const std::chrono::duration<double, std::nano> &duration, const size_t &n, std::string_view msg) -> void
 {
-    auto fn = std::bind_front(m_fn, obj);
-    auto start { std::chrono::steady_clock::now() };
-    for (auto &args : args_vec) {
-        std::apply(fn, args);
-    }
-    auto finish { std::chrono::steady_clock::now() };
-    double diff { std::chrono::duration<double, std::nano>(finish - start).count() / static_cast<double>(args_vec.size()) };
-    fmt::print("{:>30}: {:10.1f} ns\n", msg, diff);
-}
+    using namespace std::chrono_literals;
 
-template<class Fn, class Obj, class Arg>
-requires srl::concepts::invocable<Fn, Obj, Arg>
-auto timeMemberFn(std::string_view msg, Fn &&m_fn, Obj obj, srl::vector<Arg> &arg_vec) -> void
-{
-    auto fn = std::bind_front(m_fn, obj);
-    auto start { std::chrono::steady_clock::now() };
-    for (auto &arg : arg_vec) {
-        fn(arg);
+    std::chrono::duration<double, std::nano> period { duration / n };
+    double diff {};
+    std::string unit {};
+    if (period < 1us) {
+        diff = period.count();
+        unit = "ns";
+    } else if (period < 1ms) {
+        diff = period.count() / std::milli::den;
+        unit = "us";
+    } else if (period < 1s) {
+        diff = period.count() / std::micro::den;
+        unit = "ms";
+    } else {
+        diff = period.count() / std::nano::den;
+        unit = "s";
     }
-    auto finish { std::chrono::steady_clock::now() };
-    double diff { std::chrono::duration<double, std::nano>(finish - start).count() / static_cast<double>(arg_vec.size()) };
-    fmt::print("{:>30}: {:10.1f} ns\n", msg, diff);
-}
-
-template<class Fn, class Obj>
-requires srl::concepts::invocable<Fn, Obj>
-auto timeMemberFn(std::string_view msg, Fn &&m_fn, Obj obj, size_t &n) -> void
-{
-    auto fn = std::bind_front(m_fn, obj);
-    auto start { std::chrono::steady_clock::now() };
-    for (size_t idx = 0; idx < n; idx += 1) {
-        fn();
-    }
-    auto finish { std::chrono::steady_clock::now() };
-    double diff { std::chrono::duration<double, std::nano>(finish - start).count() / static_cast<double>(n) };
-    fmt::print("{:>30}: {:10.1f} ns\n", msg, diff);
+    fmt::print("{:>30}: {:10.2f} {}\n", msg, diff, unit);
 }
 
 template<class Fn, class... Args>
@@ -64,8 +44,7 @@ auto timeFn(std::string_view msg, Fn &&fn, srl::vector<std::tuple<Args...>> &arg
         std::apply(fn, args);
     }
     auto finish { std::chrono::steady_clock::now() };
-    double diff { std::chrono::duration<double, std::nano>(finish - start).count() / static_cast<double>(args_vec.size()) };
-    fmt::print("{:>30}: {:10.1f} ns\n", msg, diff);
+    printDuration(finish - start, args_vec.size(), msg);
 }
 
 template<class Fn, class Arg>
@@ -77,21 +56,19 @@ auto timeFn(std::string_view msg, Fn &&fn, srl::vector<Arg> &arg_vec) -> void
         fn(arg);
     }
     auto finish { std::chrono::steady_clock::now() };
-    double diff { std::chrono::duration<double, std::nano>(finish - start).count() / static_cast<double>(arg_vec.size()) };
-    fmt::print("{:>30}: {:10.1f} ns\n", msg, diff);
+    printDuration(finish - start, arg_vec.size(), msg);
 }
 
 template<class Fn>
 requires srl::concepts::invocable<Fn>
-auto timeFn(std::string_view msg, Fn &&fn, size_t &n) -> void
+auto timeFn(std::string_view msg, Fn &&fn, const size_t &n) -> void
 {
     auto start { std::chrono::steady_clock::now() };
     for (size_t idx = 0; idx < n; idx += 1) {
         fn();
     }
     auto finish { std::chrono::steady_clock::now() };
-    double diff { std::chrono::duration<double, std::nano>(finish - start).count() / static_cast<double>(n) };
-    fmt::print("{:>30}: {:10.1f} ns\n", msg, diff);
+    printDuration(finish - start, n, msg);
 }
 
 }    // namespace srl::utils

@@ -1,0 +1,15 @@
+---
+Checks: '
+  bugprone-*,
+  clang-*,
+  concurrency-*,
+  cppcoreguidelines-*,
+  modernize-*,
+  openmp-*,
+  performance-*,
+  portability-*,
+  readability-*
+'
+WarningsAsErrors: ''
+HeaderFilterRegex: ''
+...

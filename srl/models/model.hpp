@@ -385,9 +385,14 @@ public:
     auto getLinkCentresOfMasses() -> srl::Matrix3X<FP>;
 
     /// @brief Set the inertia tensors of the links.
-    // The inertia tensor must be (symmetric, positive-definite, matrix with its principal axes fulfilling the friangle inequalities).
+    /// The inertia tensor must be symmetric, positive-definite, matrix with its principal axes fulfilling the friangle inequalities.
     /// @param link_inertia_tensors The inertia tensors to be set.
     auto setLinkInertiaTensors(const srl::vector<srl::Matrix3<FP>> &link_inertia_tensors) -> void;
+    /// @brief Set the inertia tensors of the links.
+    /// The principal axes must fulfill the friangle inequalities.
+    /// @param principal_link_inertias The principal components of the inertias of each moving link.
+    /// @param principal_rotations The rotations of the principal components to the frame associated with the link.
+    auto setLinkInertiaTensors(const srl::Matrix3X<FP> &principal_link_inertias, const srl::Matrix3X<FP> &principal_rotations) -> void;
     /// @brief Get the inertia tensors of the links.
     /// @return srl::vector<srl::Matrix3<FP>> The inertia tensors.
     auto getLinkInertiaTensors() -> srl::vector<srl::Matrix3<FP>>;
@@ -436,7 +441,6 @@ private:
     //
     // =============== =============== Members
 private:
-public:
     static inline constexpr srl::uint kDim { srl::kDim };
     static inline const srl::vector<srl::Matrix3<FP>> kSo3 { srl::kSo3<FP> };
 
