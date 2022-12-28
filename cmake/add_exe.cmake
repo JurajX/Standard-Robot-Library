@@ -1,28 +1,17 @@
 function(add_exe)
     set(options CXX_STANDARD_REQUIRED CXX_EXTENSIONS_OFF TEST)
     set(oneValueArgs NAME CXX_STANDARD)
-    set(multiValueArgs SRCS LINK_LIBRARIES OPTIM_OPTIONS)
+    set(multiValueArgs SRCS LINK_LIBRARIES COMPILE_OPTIONS LINK_OPTIONS)
     cmake_parse_arguments(EXE "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    add_executable(
-        ${EXE_NAME}
-        ${EXE_NAME}.cpp
-        ${EXE_SRCS}
-    )
+    add_executable(${EXE_NAME} ${EXE_NAME}.cpp ${EXE_SRCS})
+    add_compile_options(TARGET ${EXE_NAME} COMPILE_OPTIONS ${EXE_COMPILE_OPTIONS} LINK_OPTIONS ${EXE_LINK_OPTIONS})
+    target_link_libraries(${EXE_NAME} PUBLIC ${EXE_LINK_LIBRARIES})
 
-    if(DEFINED EXE_OPTIM_OPTIONS)
-        add_compile_options(
-            TARGET ${EXE_NAME}
-            OPTIM_OPTIONS ${EXE_OPTIM_OPTIONS}
-        )
-    endif(DEFINED EXE_OPTIM_OPTIONS)
-
-    if(DEFINED EXE_LINK_LIBRARIES)
-        target_link_libraries(
-            ${EXE_NAME}
-            PUBLIC ${EXE_LINK_LIBRARIES}
-        )
-    endif(DEFINED EXE_LINK_LIBRARIES)
+    # if (EMSCRIPTEN)
+    #     set_target_properties(${EXE_NAME} PROPERTIES SUFFIX ".html")
+    #     target_link_options(${EXE_NAME} PRIVATE -sSINGLE_FILE=1)
+    # endif()
 
     if(DEFINED EXE_CXX_STANDARD)
         set_target_properties(
@@ -34,12 +23,7 @@ function(add_exe)
     endif(DEFINED EXE_CXX_STANDARD)
 
     if(EXE_TEST)
-        target_link_libraries(
-            ${EXE_NAME}
-            PRIVATE gtest
-            PRIVATE gmock
-            PRIVATE gtest_main
-        )
+        target_link_libraries(${EXE_NAME} PRIVATE gtest gmock gtest_main)
         add_test(
             NAME ${EXE_NAME}
             COMMAND ${EXE_NAME} --gtest_output=xml:${CMAKE_BINARY_DIR}/Testing/${EXE_NAME}_report.xml

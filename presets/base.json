@@ -1,0 +1,55 @@
+{
+  "version": 5,
+
+  "configurePresets": [
+    {
+      "name": "base",
+      "description": "Sets build and install directory.",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "installDir": "${sourceDir}/install/${presetName}"
+    },
+    {
+      "name": "gen-ninja",
+      "description": "Sets generator to ninja.",
+      "hidden": true,
+      "generator": "Ninja"
+    },
+    {
+      "name": "base-clang",
+      "description": "Sets clang compiler.",
+      "hidden": true,
+      "inherits": [ "base", "gen-ninja" ],
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++"
+      }
+    },
+    {
+      "name": "base-gcc",
+      "description": "Sets gcc compiler.",
+      "hidden": true,
+      "inherits": [ "base", "gen-ninja" ],
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++"
+      }
+    },
+    {
+      "name": "base-emscripten",
+      "description": "Sets clang compiler.",
+      "hidden": true,
+      "inherits": [ "base", "gen-ninja" ]
+    },
+    {
+      "name": "debug",
+      "hidden": true,
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+    },
+    {
+      "name": "release",
+      "hidden": true,
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+    }
+  ]
+}

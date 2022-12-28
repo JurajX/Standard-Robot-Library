@@ -1,7 +1,7 @@
 #include <srl/math/math.hpp>
 
-#include <srl/constants.hpp>
-#include <srl/types.hpp>
+#include <srl/common/constants.hpp>
+#include <srl/common/types.hpp>
 
 #include <fmt/format.h>
 

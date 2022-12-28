@@ -2,7 +2,7 @@
 #define SRL_TYPES_HPP
 #pragma once
 
-#include <srl/concepts.hpp>
+#include <srl/common/concepts.hpp>
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>

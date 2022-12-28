@@ -1,9 +1,7 @@
 set(
     HDRS
-    ${CMAKE_SOURCE_DIR}/srl/concepts.hpp
-    ${CMAKE_SOURCE_DIR}/srl/constants.hpp
-    ${CMAKE_SOURCE_DIR}/srl/types.hpp
     ${CMAKE_SOURCE_DIR}/srl/math/math.hpp
+    ${CMAKE_SOURCE_DIR}/srl/math/math-impl.hpp
 )
 
 install(
@@ -13,31 +11,24 @@ install(
 )
 
 add_library(
-    math SHARED
-    ${CMAKE_SOURCE_DIR}/srl/math/math.cpp
-    ${CMAKE_SOURCE_DIR}/srl/math/math-impl.hpp
+    srl_math INTERFACE
     ${HDRS}
-)
-add_compile_options(
-    TARGET math
-    OPTIM_OPTIONS "-O3"
 )
 
 set_target_properties(
-    math PROPERTIES
+    srl_math PROPERTIES
     CXX_STANDARD 20
     CXX_STANDARD_REQUIRED ON
     CXX_EXTENSIONS OFF
 )
 
-find_package(Eigen3 REQUIRED)
 target_link_libraries(
-    math
-    PUBLIC Eigen3::Eigen fmt::fmt
+    srl_math
+    INTERFACE srl_common
 )
 
 target_include_directories(
-    math PUBLIC
+    srl_math INTERFACE
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
     $<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}>
 )

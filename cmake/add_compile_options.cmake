@@ -1,33 +1,14 @@
-# Remove optimisation flags from the automatic Cmake compile flags as they are set manualy later.
-string(REGEX REPLACE "-O." "" CMAKE_C_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
-string(REGEX REPLACE "-O." "" CMAKE_C_FLAGS_RELEASE ${CMAKE_C_FLAGS_RELEASE})
-string(REGEX REPLACE "-O." "" CMAKE_C_FLAGS_RELWITHDEBINFO ${CMAKE_C_FLAGS_RELWITHDEBINFO})
-string(REGEX REPLACE "-O." "" CMAKE_C_FLAGS_MINSIZEREL ${CMAKE_C_FLAGS_MINSIZEREL})
-string(REGEX REPLACE "-O." "" CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG})
-string(REGEX REPLACE "-O." "" CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
-string(REGEX REPLACE "-O." "" CMAKE_CXX_FLAGS_RELWITHDEBINFO ${CMAKE_CXX_FLAGS_RELWITHDEBINFO})
-string(REGEX REPLACE "-O." "" CMAKE_CXX_FLAGS_MINSIZEREL ${CMAKE_CXX_FLAGS_MINSIZEREL})
-
 function(add_compile_options)
     set(options "")
     set(oneValueArgs TARGET)
-    set(multiValueArgs OPTIM_OPTIONS)
-    cmake_parse_arguments(COMPILE "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
-
+    set(multiValueArgs COMPILE_OPTIONS LINK_OPTIONS)
+    cmake_parse_arguments(USER "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
     if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         set(CLANG true)
     endif()
 
     if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
         set(GCC true)
-    endif()
-
-    if("${CMAKE_BUILD_TYPE}" STREQUAL "Coverage")
-        set(COVERAGE true)
-    endif()
-
-    if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-        set(DEBUG true)
     endif()
 
     list(APPEND WARNINGS
@@ -62,48 +43,39 @@ function(add_compile_options)
         )
     endif()
 
-    list(APPEND COMPILE_OPTIONS
+    list(APPEND DEFAULT_OPTIONS
         -fexceptions                            # throw from c++ through c back to c++ survives
-        -fcf-protection                         # control flow integrity protection
-        -fopenmp                                # links to OpenMP library, mainly for Eigen
-        -fstack-protector-strong                # more performant stack protector
+        # -fcf-protection                         # control flow integrity protection
+        -fstack-protector-strong                # more performant stack protector   does not work with emscripten
         # -fstack-clash-protection                # increased reliability of stack overflow detection
         -fvisibility-inlines-hidden             # forbids to compare pointers to inline functions
         -fvisibility=default                    # symbols in libraries to be explicitly exported to avoid conflicts
-        -march=native                           # optimise for local architecture
+        # -march=native                           # optimise for local architecture
         -pipe                                   # avoid writing temporary files
     )
+    list(APPEND DEFAULT_OPTIONS $<$<NOT:$<CONFIG:Debug>>:-D_FORTIFY_SOURCE=2>)      # run-time buffer overflow detection (needs at least -O1)
 
-    if((NOT COMPILE_OPTIM_OPTIONS) OR COVERAGE)
-        list(APPEND COMPILE_OPTIM_OPTIONS "-O0")
-        list(REMOVE_ITEM COMPILE_OPTIM_OPTIONS "-O1" "-O2" "-O3")
-    endif()
+    set(USER_COMPILE_OPTIONS $<$<OR:$<CONFIG:Debug>,$<CONFIG:Coverage>>:$<FILTER:-O0 ${USER_COMPILE_OPTIONS},EXCLUDE,-O[1-9]>>)
 
-    if((NOT DEBUG) AND ("-O1" IN_LIST COMPILE_OPTIM_OPTIONS OR "-O2" IN_LIST COMPILE_OPTIM_OPTIONS OR "-O3" IN_LIST COMPILE_OPTIM_OPTIONS))
-        list(APPEND COMPILE_OPTIONS
-            "-D_FORTIFY_SOURCE=2"               # run-time buffer overflow detection (needs at least -O1)
-        )
-    endif()
-
-    list(APPEND COMPILE_COVERAGE_OPTIONS
+    list(APPEND COVERAGE_OPTIONS
         -fno-inline                             # no inline
         -g                                      # debugging information in the operating system's native format
     )
     if(CLANG)
-        list(APPEND COMPILE_COVERAGE_OPTIONS
+        list(APPEND COVERAGE_OPTIONS
             -fprofile-instr-generate            # generate instrumented code to collect execution counts
             -fcoverage-mapping                  # generate coverage mapping to enable code coverage analysis
         )
     elseif(GCC)
-        list(APPEND COMPILE_COVERAGE_OPTIONS
+        list(APPEND COVERAGE_OPTIONS
             -ftest-coverage                     # produce a notes file that can use to show program coverage
             -fprofile-arcs                      # records how many times each branch/call is executed
         )
     endif(CLANG)
 
-    list(APPEND COMPILE_DEBUG_OPTIONS
+    list(APPEND DEBUG_OPTIONS
         -fsanitize=address                      # address sanitiser
-        -fsanitize=leak                         # leak sanitiser
+        # -fsanitize=leak                         # leak sanitiser
         # -fsanitize=thread                       # thread sanitiser      cannot be used in combination with address and leak sanitisers
         # -fsanitize=memory                       # memory sanitiser      not supported for mac
         # -fsanitize-memory-track-origins         # track memory origin   used in combination with memory
@@ -113,7 +85,7 @@ function(add_compile_options)
         -fno-omit-frame-pointer                 # for nicer stack traces in error messages
         -fno-optimize-sibling-calls             # disable tail call elimination
         -g                                      # debugging information in the operating system's native format
-        # -ggdb3                                  # debugging
+        -ggdb3                                  # debugging
     )
 
     if(CLANG)
@@ -134,29 +106,28 @@ function(add_compile_options)
         )
     endif()
 
-    list(APPEND COMPILE_RELEASE_OPTIONS
+    list(APPEND RELEASE_OPTIONS
         -fno-asynchronous-unwind-tables         # see -fasynchronous-unwind-tables
         -fno-elide-constructors                 # prevents compiler from eliding the constructors
         -fno-math-errno                         # disables setting errno
         -fno-stack-protector                    #
         -fno-strict-aliasing                    # fewer compiler assumptions about pointer types
         -fno-unwind-tables                      #
-        # -ffast-math                             # break strict IEEE compliance, disables setting errno,
-                                                #  ...all math is finite, allows reciprocal approximations, disables signed zero
     )
 
     list(APPEND COMMON_FLAGS
         ${WARNINGS}
-        ${COMPILE_OPTIONS}
-        ${COMPILE_OPTIM_OPTIONS}
+        ${DEFAULT_OPTIONS}
     )
+    list(APPEND COMMON_FLAGS $<$<BOOL:${EMSCRIPTEN}>:-msimd128>)                 # turn on SIMD in emscripten
+    list(APPEND USER_LINK_OPTIONS $<$<BOOL:${EMSCRIPTEN}>:-sINITIAL_MEMORY=$<IF:$<CONFIG:Debug>,512,128>MB>)
 
-    target_compile_options(${COMPILE_TARGET} PRIVATE "$<$<CONFIG:Coverage>:${COMMON_FLAGS};${COMPILE_COVERAGE_OPTIONS}>")
-    target_compile_options(${COMPILE_TARGET} PRIVATE "$<$<CONFIG:Debug>:${COMMON_FLAGS};${COMPILE_DEBUG_OPTIONS}>")
-    target_compile_options(${COMPILE_TARGET} PRIVATE "$<$<CONFIG:Release>:${COMMON_FLAGS};${COMPILE_RELEASE_OPTIONS}>")
+    target_compile_options(${USER_TARGET} PRIVATE $<$<CONFIG:Coverage>:${COMMON_FLAGS};${COVERAGE_OPTIONS};${USER_COMPILE_OPTIONS}>)
+    target_compile_options(${USER_TARGET} PRIVATE $<$<CONFIG:Debug>:${COMMON_FLAGS};${DEBUG_OPTIONS};${USER_COMPILE_OPTIONS}>)
+    target_compile_options(${USER_TARGET} PRIVATE $<$<CONFIG:Release>:${COMMON_FLAGS};${RELEASE_OPTIONS};${USER_COMPILE_OPTIONS}>)
 
-    target_link_options(${COMPILE_TARGET} PRIVATE "$<$<CONFIG:Coverage>:${COMMON_FLAGS};${COMPILE_COVERAGE_OPTIONS}>")
-    target_link_options(${COMPILE_TARGET} PRIVATE "$<$<CONFIG:Debug>:${COMMON_FLAGS};${COMPILE_DEBUG_OPTIONS}>")
-    target_link_options(${COMPILE_TARGET} PRIVATE "$<$<CONFIG:Release>:${COMMON_FLAGS};${COMPILE_RELEASE_OPTIONS}>")
+    target_link_options(${USER_TARGET} PRIVATE $<$<CONFIG:Coverage>:${COMMON_FLAGS};${COVERAGE_OPTIONS};${USER_LINK_OPTIONS}>)
+    target_link_options(${USER_TARGET} PRIVATE $<$<CONFIG:Debug>:${COMMON_FLAGS};${DEBUG_OPTIONS};${USER_LINK_OPTIONS}>)
+    target_link_options(${USER_TARGET} PRIVATE $<$<CONFIG:Release>:${COMMON_FLAGS};${RELEASE_OPTIONS};${USER_LINK_OPTIONS}>)
 
 endfunction(add_compile_options)

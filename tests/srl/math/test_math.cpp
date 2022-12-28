@@ -2,9 +2,9 @@
 
 #include <srl/math/math.hpp>
 
-#include <srl/concepts.hpp>
-#include <srl/constants.hpp>
-#include <srl/types.hpp>
+#include <srl/common/concepts.hpp>
+#include <srl/common/constants.hpp>
+#include <srl/common/types.hpp>
 
 #include <Eigen/Geometry>
 

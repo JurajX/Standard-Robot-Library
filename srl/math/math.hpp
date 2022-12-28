@@ -2,9 +2,9 @@
 #define SRL_MATH_HPP
 #pragma once
 
-#include <srl/concepts.hpp>
-#include <srl/constants.hpp>
-#include <srl/types.hpp>
+#include <srl/common/concepts.hpp>
+#include <srl/common/constants.hpp>
+#include <srl/common/types.hpp>
 
 #include <cmath>
 
@@ -190,31 +190,5 @@ auto so3element(const srl::Vector3<FP> &vec) -> srl::Matrix3<FP>;
 }    // namespace srl::math
 
 #include <srl/math/math-impl.hpp>
-
-// ===== ===== ===== ===== Instantiations
-/// tell doxygen to skip from here \cond
-// ----- Matrix functions
-extern template auto srl::math::isPositiveDefinite(const srl::Matrix3f &matrix) -> bool;
-extern template auto srl::math::isPositiveDefinite(const srl::Matrix3d &matrix) -> bool;
-
-extern template auto srl::math::isInertia(const srl::Matrix3f &inertia) -> bool;
-extern template auto srl::math::isInertia(const srl::Matrix3d &inertia) -> bool;
-
-// - Lie group functions
-extern template auto srl::math::rotation(const float &angle, const srl::Vector3f &normed_axis) -> srl::Matrix3f;
-extern template auto srl::math::rotation(const double &angle, const srl::Vector3d &normed_axis) -> srl::Matrix3d;
-
-extern template auto srl::math::rotation(const srl::Vector3f &rot_vec) -> srl::Matrix3f;
-extern template auto srl::math::rotation(const srl::Vector3d &rot_vec) -> srl::Matrix3d;
-
-extern template auto srl::math::adjoint(const srl::Matrix3f &element, const srl::Matrix3f &rotation) -> srl::Matrix3f;
-extern template auto srl::math::adjoint(const srl::Matrix3d &element, const srl::Matrix3d &rotation) -> srl::Matrix3d;
-
-extern template auto srl::math::adjoint(const srl::Vector3f &diagonal, const srl::Matrix3f &rotation) -> srl::Matrix3f;
-extern template auto srl::math::adjoint(const srl::Vector3d &diagonal, const srl::Matrix3d &rotation) -> srl::Matrix3d;
-
-extern template auto srl::math::so3element(const srl::Vector3f &vec) -> srl::Matrix3f;
-extern template auto srl::math::so3element(const srl::Vector3d &vec) -> srl::Matrix3d;
-/// tell doxygen to skip untill here \endcond
 
 #endif    // SRL_MATH_HPP

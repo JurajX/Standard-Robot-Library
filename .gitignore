@@ -1,6 +1,7 @@
 # ====================================================== MISC IGNORE
-# build and docs folder
+# build folder, vscode folder
 build
+.vscode
 
 # log files
 *.log

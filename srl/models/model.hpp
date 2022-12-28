@@ -2,9 +2,9 @@
 #define SRL_MODELS_HPP
 #pragma once
 
-#include <srl/concepts.hpp>
-#include <srl/constants.hpp>
-#include <srl/types.hpp>
+#include <srl/common/concepts.hpp>
+#include <srl/common/constants.hpp>
+#include <srl/common/types.hpp>
 
 #include <string_view>
 
@@ -500,11 +500,5 @@ using RobotModelf = RobotModel<float>;
 }    // namespace srl::model
 
 #include <srl/models/model-impl.hpp>
-
-// ===== ===== ===== ===== Instantiations
-/// tell doxygen to skip from here \cond
-extern template class srl::model::RobotModel<float>;
-extern template class srl::model::RobotModel<double>;
-/// tell doxygen to skip untill here \endcond
 
 #endif    // SRL_MODELS_HPP
