@@ -59,8 +59,9 @@ def coverage(llvm_bin):
     command1 = f"""
         export PATH={llvm_bin}:$PATH
         export LLVM_PROFILE_FILE={records_path}/%m-%p.profraw
+        rm -rf {records_path}
         cmake --preset coverage
-        cmake --build --preset coverage
+        cmake --build -j --preset coverage
         rm -rf {records_path}
         mkdir -p {records_path}
         ctest --preset coverage
@@ -97,7 +98,8 @@ def main():
         "--llvm_bin",
         required=False,
         help="Path to the llvm binary directory.",
-        default="/opt/homebrew/opt/llvm/bin",
+        default="/usr/local/opt/llvm/bin",
+        # default="/opt/homebrew/opt/llvm/bin",
         type=str
     )
 
