@@ -20,6 +20,9 @@
       "description": "Sets clang compiler.",
       "hidden": true,
       "inherits": [ "base", "gen-ninja" ],
+      "environment": {
+        "PATH": "/usr/local/opt/llvm/bin:/opt/homebrew/opt/llvm/bin:$penv{PATH}"
+      },
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++"
@@ -31,8 +34,8 @@
       "hidden": true,
       "inherits": [ "base", "gen-ninja" ],
       "cacheVariables": {
-        "CMAKE_C_COMPILER": "gcc",
-        "CMAKE_CXX_COMPILER": "g++"
+        "CMAKE_C_COMPILER": "gcc-13",
+        "CMAKE_CXX_COMPILER": "g++-13"
       }
     },
     {
