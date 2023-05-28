@@ -11,9 +11,12 @@ install(
 )
 
 add_library(
-    srl_math INTERFACE
+    srl_math
+    ${CMAKE_SOURCE_DIR}/srl/math/math.cpp
     ${HDRS}
 )
+
+add_compile_options(TARGET srl_math)
 
 set_target_properties(
     srl_math PROPERTIES
@@ -24,11 +27,11 @@ set_target_properties(
 
 target_link_libraries(
     srl_math
-    INTERFACE srl_common
+    PUBLIC srl_common
 )
 
 target_include_directories(
-    srl_math INTERFACE
+    srl_math PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
     $<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}>
 )

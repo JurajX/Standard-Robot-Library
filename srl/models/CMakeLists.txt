@@ -11,9 +11,12 @@ install(
 )
 
 add_library(
-    srl_model INTERFACE
+    srl_model
+    ${CMAKE_SOURCE_DIR}/srl/models/model.cpp
     ${HDRS}
 )
+
+add_compile_options(TARGET srl_model)
 
 set_target_properties(
     srl_model PROPERTIES
@@ -24,11 +27,11 @@ set_target_properties(
 
 target_link_libraries(
     srl_model
-    INTERFACE srl_math srl_common
+    PUBLIC srl_math srl_common
 )
 
 target_include_directories(
-    srl_model INTERFACE
+    srl_model PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
     $<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}>
 )
