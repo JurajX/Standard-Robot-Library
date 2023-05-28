@@ -30,8 +30,8 @@ def configure(preset):
 
 def build(preset, num_cores=None):
     """Build preset."""
-    cores = f"-j{num_cores}" if num_cores is not None else ""
-    command = f"cmake --build --preset {preset} {cores}"
+    cores = f"-j{num_cores}" if num_cores is not None else "-j"
+    command = f"cmake --build {cores} --preset {preset}"
     subprocess.run(command, shell=True, env=create_environ(), check=True)
 
 
@@ -51,7 +51,7 @@ def docs():
 def list_presets():
     """List all presets in the repository."""
     command = "cmake --list-presets"
-    result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
+    result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
     out = result.stdout.replace('"', '').replace(' ', '')
     all_presets = out.split('\n')
     all_presets.remove("coverage")
