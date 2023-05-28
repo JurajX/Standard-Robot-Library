@@ -3,14 +3,17 @@ function(add_compile_options)
     set(oneValueArgs TARGET)
     set(multiValueArgs COMPILE_OPTIONS LINK_OPTIONS)
     cmake_parse_arguments(USER "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
     if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         set(CLANG true)
-    endif()
-
-    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
         set(GCC true)
+    else()
+        message(FATAL_ERROR "Supported compilers are Clang and GCC. Got ${CMAKE_CXX_COMPILER_ID}.")
     endif()
 
+
+# =========================== Warnings
     list(APPEND WARNINGS
         -Wall                                   # all warnings
         -Wextra                                 # extra warnings
@@ -43,20 +46,27 @@ function(add_compile_options)
         )
     endif()
 
+
+# =========================== Default Options
     list(APPEND DEFAULT_OPTIONS
         -fexceptions                            # throw from c++ through c back to c++ survives
         # -fcf-protection                         # control flow integrity protection
-        -fstack-protector-strong                # more performant stack protector   does not work with emscripten
-        # -fstack-clash-protection                # increased reliability of stack overflow detection
         -fvisibility-inlines-hidden             # forbids to compare pointers to inline functions
         -fvisibility=default                    # symbols in libraries to be explicitly exported to avoid conflicts
         # -march=native                           # optimise for local architecture
         -pipe                                   # avoid writing temporary files
     )
-    list(APPEND DEFAULT_OPTIONS $<$<NOT:$<CONFIG:Debug>>:-D_FORTIFY_SOURCE=2>)      # run-time buffer overflow detection (needs at least -O1)
+    if(GCC)
+        list(APPEND DEFAULT_OPTIONS
+            -fstack-clash-protection            # increased reliability of stack overflow detection
+        )
+    endif()
+    list(APPEND DEFAULT_OPTIONS $<$<NOT:$<CONFIG:Debug>>:-D_FORTIFY_SOURCE=2>)              # run-time buffer overflow detection (needs at least -O1)
+    list(APPEND DEFAULT_OPTIONS $<$<NOT:$<BOOL:${EMSCRIPTEN}>>:-fstack-protector-strong>)   # more performant stack protector   not for emscripten
+    list(APPEND DEFAULT_OPTIONS $<$<BOOL:${EMSCRIPTEN}>:-msimd128>)                         # turn on SIMD in emscripten
 
-    set(USER_COMPILE_OPTIONS $<$<OR:$<CONFIG:Debug>,$<CONFIG:Coverage>>:$<FILTER:-O0 ${USER_COMPILE_OPTIONS},EXCLUDE,-O[1-9]>>)
 
+# =========================== Coverage Options
     list(APPEND COVERAGE_OPTIONS
         -fno-inline                             # no inline
         -g                                      # debugging information in the operating system's native format
@@ -73,39 +83,40 @@ function(add_compile_options)
         )
     endif(CLANG)
 
-    list(APPEND DEBUG_OPTIONS
-        -fsanitize=address                      # address sanitiser
-        # -fsanitize=leak                         # leak sanitiser
-        # -fsanitize=thread                       # thread sanitiser      cannot be used in combination with address and leak sanitisers
-        # -fsanitize=memory                       # memory sanitiser      not supported for mac
-        # -fsanitize-memory-track-origins         # track memory origin   used in combination with memory
-        -fsanitize=undefined                    # undefined sanitiser
 
-        -fasynchronous-unwind-tables            # generate unwind table that can be used for stack unwinding from asynchronous events
-        -fno-omit-frame-pointer                 # for nicer stack traces in error messages
-        -fno-optimize-sibling-calls             # disable tail call elimination
-        -g                                      # debugging information in the operating system's native format
-        -ggdb3                                  # debugging
+# =========================== Debug Options
+    list(APPEND DEBUG_OPTIONS
+        # -fsanitize=thread                                   # thread sanitiser      cannot be used in combination with address and leak sanitisers
+        # -fsanitize=memory                                   # memory sanitiser      not supported for mac
+        # -fsanitize-memory-track-origins                     # track memory origin
+
+        -fsanitize=address                                  # address sanitiser
+        -fsanitize=pointer-subtract                         # instrument subtraction with pointer operands; needs address sanitiser
+        -fsanitize=pointer-compare                          # instrument comparison operation; needs address sanitiser
+        -fsanitize=leak                                     # leak sanitiser
+        -fsanitize-address-use-after-return=always          # detect stack use after return problems
+        -fsanitize-address-use-after-scope                  # sanitization of local variables
+
+        -fsanitize=undefined                                # undefined sanitiser
+
+        -fsanitize=integer                                  # checks for undefined or suspicious integer behavior
+        -fsanitize=implicit-integer-arithmetic-value-change # catches implicit conversions that change the arithmetic value of the integer
+
+        -fsanitize=float-divide-by-zero                     # floating point division by zero
+        -fsanitize=implicit-conversion                      # checks for suspicious behavior of implicit conversions
+        -fsanitize=local-bounds                             # out of bounds array indexing
+        -fsanitize=nullability                              # passing, assigning, and returning null
+
+        -fasynchronous-unwind-tables                        # generate unwind table that can be used for stack unwinding from asynchronous events
+        -fno-omit-frame-pointer                             # for nicer stack traces in error messages
+        -fno-optimize-sibling-calls                         # disable tail call elimination (even nicer stack traces)
+
+        -g                                                  # debugging information in the operating system's native format
+        -ggdb3                                              # debugging
     )
 
-    if(CLANG)
-        list(APPEND COMPILE_DEBUG_OPTIONS
-            # parts of undefined sanitiser that are not enabled by default
-            -fsanitize=float-divide-by-zero                     #  - floating point division by zero
-            -fsanitize=integer                                  #  - checks for undefined or suspicious integer behavior
-            -fsanitize=implicit-conversion                      #  - checks for suspicious behavior of implicit conversions
-            -fsanitize=local-bounds                             #  - out of bounds array indexing
-            -fsanitize=nullability                              #  - passing, assigning, and returning null
-            -fsanitize=implicit-integer-arithmetic-value-change #  - catches implicit conversions that change the arithmetic value of the integer
-        )
-    elseif(GCC)
-        list(APPEND COMPILE_DEBUG_OPTIONS
-            -fsanitize=pointer-compare          # instrument comparison operation; needs address sanitiser
-            -fsanitize=pointer-subtract         # instrument subtraction with pointer operands; needs address sanitiser
-            -fsanitize-address-use-after-scope  # sanitization of local variables
-        )
-    endif()
 
+# =========================== Release Options
     list(APPEND RELEASE_OPTIONS
         -fno-asynchronous-unwind-tables         # see -fasynchronous-unwind-tables
         -fno-elide-constructors                 # prevents compiler from eliding the constructors
@@ -115,12 +126,11 @@ function(add_compile_options)
         -fno-unwind-tables                      #
     )
 
-    list(APPEND COMMON_FLAGS
-        ${WARNINGS}
-        ${DEFAULT_OPTIONS}
-    )
-    list(APPEND COMMON_FLAGS $<$<BOOL:${EMSCRIPTEN}>:-msimd128>)                 # turn on SIMD in emscripten
+
+# =========================== Apply Options
+    list(APPEND COMMON_FLAGS ${WARNINGS} ${DEFAULT_OPTIONS})
     list(APPEND USER_LINK_OPTIONS $<$<BOOL:${EMSCRIPTEN}>:-sINITIAL_MEMORY=$<IF:$<CONFIG:Debug>,512,128>MB>)
+    set(USER_COMPILE_OPTIONS $<$<OR:$<CONFIG:Debug>,$<CONFIG:Coverage>>:$<FILTER:-O0 ${USER_COMPILE_OPTIONS},EXCLUDE,-O[1-9]>>)
 
     target_compile_options(${USER_TARGET} PRIVATE $<$<CONFIG:Coverage>:${COMMON_FLAGS};${COVERAGE_OPTIONS};${USER_COMPILE_OPTIONS}>)
     target_compile_options(${USER_TARGET} PRIVATE $<$<CONFIG:Debug>:${COMMON_FLAGS};${DEBUG_OPTIONS};${USER_COMPILE_OPTIONS}>)
