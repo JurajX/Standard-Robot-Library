@@ -4,9 +4,8 @@
 
 #include <srl/utils/data_gen.hpp>
 
-#include <srl/common/concepts.hpp>
-#include <srl/common/constants.hpp>
-#include <srl/common/types.hpp>
+#include <srl/common/common.hpp>
+
 
 #include <cmath>
 #include <tuple>

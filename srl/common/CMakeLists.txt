@@ -1,5 +1,6 @@
 set(
     HDRS
+    ${CMAKE_SOURCE_DIR}/srl/common/common.hpp
     ${CMAKE_SOURCE_DIR}/srl/common/concepts.hpp
     ${CMAKE_SOURCE_DIR}/srl/common/constants.hpp
     ${CMAKE_SOURCE_DIR}/srl/common/types.hpp
@@ -25,7 +26,7 @@ set_target_properties(
 
 target_link_libraries(
     srl_common
-    INTERFACE Eigen3::Eigen fmt
+    INTERFACE Eigen3::Eigen fmt::fmt
 )
 
 target_include_directories(

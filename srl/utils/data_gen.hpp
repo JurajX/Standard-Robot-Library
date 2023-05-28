@@ -2,8 +2,7 @@
 #define SRL_DATA_GEN_HPP
 #pragma once
 
-#include <srl/common/concepts.hpp>
-#include <srl/common/types.hpp>
+#include <srl/common/common.hpp>
 
 namespace srl::utils {
 

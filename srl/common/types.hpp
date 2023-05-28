@@ -19,8 +19,6 @@ namespace srl {
 /// @brief Typedef for unsigned int.
 using uint = unsigned int;
 
-//
-// ----- std types
 /// @brief Typedef for the standard library vector.
 using std::vector;
 

@@ -1,7 +1,6 @@
 #include <srl/math/math.hpp>
 
-#include <srl/common/constants.hpp>
-#include <srl/common/types.hpp>
+#include <srl/common/common.hpp>
 
 #include <fmt/format.h>
 
