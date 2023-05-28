@@ -41,14 +41,14 @@ concept dynamic_or_square_matrix = square_static_matrix<T> || dynamic_matrix<T>;
 /// @brief Concept for an indexable container (class).
 template<typename T>
 concept indexable = requires(T x, size_t idx) {
-                        typename T::value_type;
-                        {
-                            x.operator[](idx)
-                            } -> std::same_as<typename T::value_type &>;
-                        {
-                            x.size()
-                            } -> std::convertible_to<size_t>;
-                    };
+    typename T::value_type;
+    {
+        x.operator[](idx)
+    } -> std::same_as<typename T::value_type &>;
+    {
+        x.size()
+    } -> std::convertible_to<size_t>;
+};
 
 }    // namespace srl::concepts
 

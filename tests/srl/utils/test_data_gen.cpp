@@ -20,9 +20,9 @@ TEST_F(TestDataGens, TestGetRandVectors)    // NOLINT
     EXPECT_EQ(set[0].size(), vec_size);
     double min { std::numeric_limits<double>::max() };
     double max { std::numeric_limits<double>::lowest() };
-    for (const auto &v : set) {
-        min = v.minCoeff() < min ? v.minCoeff() : min;
-        max = v.maxCoeff() > max ? v.maxCoeff() : max;
+    for (const auto &vector : set) {
+        min = vector.minCoeff() < min ? vector.minCoeff() : min;
+        max = vector.maxCoeff() > max ? vector.maxCoeff() : max;
     }
     EXPECT_TRUE(minimum < min);
     EXPECT_TRUE(maximum > max);

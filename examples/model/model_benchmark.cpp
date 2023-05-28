@@ -30,65 +30,65 @@ auto main(int /*argc*/, char ** /*argv*/) -> int    // NOLINT (bugprone-exceptio
     fmt::print("----- ----- ----- Timing forward kinematics for flange.\n");
     srl::utils::timeFn(
       "wrt. robot base quat",
-      [&model](const auto &q) { model.fkQuat(q, true); },
+      [&model](const auto &val) { model.fkQuat(val, true); },
       set);
     srl::utils::timeFn(
       "wrt. world frame quat",
-      [&model](const auto &q) { model.fkQuat(q, false); },
+      [&model](const auto &val) { model.fkQuat(val, false); },
       set);
     srl::utils::timeFn(
       "wrt. robot base",
-      [&model](const auto &q) { model.fk(q, true); },
+      [&model](const auto &val) { model.fk(val, true); },
       set);
     srl::utils::timeFn(
       "wrt. world frame",
-      [&model](const auto &q) { model.fk(q, false); },
+      [&model](const auto &val) { model.fk(val, false); },
       set);
 
     fmt::print("----- ----- ----- Timing forward kinematics for all links.\n");
     srl::utils::timeFn(
       "wrt. robot base, quat",
-      [&model](const auto &q) { model.fkAllQuat(q, true); },
+      [&model](const auto &val) { model.fkAllQuat(val, true); },
       set);
     srl::utils::timeFn(
       "wrt. world frame, quat",
-      [&model](const auto &q) { model.fkAllQuat(q, false); },
+      [&model](const auto &val) { model.fkAllQuat(val, false); },
       set);
     srl::utils::timeFn(
       "wrt. robot base",
-      [&model](const auto &q) { model.fkAll(q, true); },
+      [&model](const auto &val) { model.fkAll(val, true); },
       set);
     srl::utils::timeFn(
       "wrt. world frame",
-      [&model](const auto &q) { model.fkAll(q, false); },
+      [&model](const auto &val) { model.fkAll(val, false); },
       set);
 
     fmt::print("----- ----- ----- Timing dynamics.\n");
     srl::utils::timeFn(
       "Mass matrix, potential energy",
-      [&model](const auto &q) { model.getMassMatrixAndPotEnergy(q); },
+      [&model](const auto &val) { model.getMassMatrixAndPotEnergy(val); },
       set);
     srl::utils::timeFn(
       "Lagrangian",
-      [&model](const auto &q) { model.getLagrangian(q, q); },
+      [&model](const auto &val) { model.getLagrangian(val, val); },
       set);
     srl::utils::timeFn(
       "Params for Equation of Motion",
-      [&model](const auto &q) { model.getEomParams(q); },
+      [&model](const auto &val) { model.getEomParams(val); },
       set);
     srl::utils::timeFn(
       "Inverse dynamics",
-      [&model](const auto &q) { model.getMotorTorque(q, q, q); },
+      [&model](const auto &val) { model.getMotorTorque(val, val, val); },
       set);
     srl::utils::timeFn(
       "Forward dynamics",
-      [&model](const auto &q) { model.getAngularAcceleration(q, q, q); },
+      [&model](const auto &val) { model.getAngularAcceleration(val, val, val); },
       set);
 
     fmt::print("----- ----- ----- Timing Jacobian.\n");
     srl::utils::timeFn(
       "Rot. and Transl. Jacobian",
-      [&model](const auto &q) { model.getJacobian(q); },
+      [&model](const auto &val) { model.getJacobian(val); },
       set);
 
     fmt::print("----- End of the benchmark.\n");

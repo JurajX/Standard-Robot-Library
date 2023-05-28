@@ -2,9 +2,7 @@
 
 #include <srl/models/model.hpp>
 
-#include <srl/common/concepts.hpp>
-#include <srl/common/constants.hpp>
-#include <srl/common/types.hpp>
+#include <srl/common/common.hpp>
 
 #include <stdexcept>
 
@@ -143,11 +141,11 @@ TYPED_TEST(TestSettersAndGetters, LinkCentresOfMasses)    // NOLINT
 TYPED_TEST(TestSettersAndGetters, LinkInertiaTensors)    // NOLINT
 {
     // Testing setLinkInertiaTensors and getLinkInertiaTensors
-    srl::vector<srl::Matrix3<TypeParam>> inertias { this->inertia, this->inertia, this->inertia };
-    srl::vector<srl::Matrix3<TypeParam>> inertiasBad { this->inertia, this->inertia, this->inertiaBad };
+    const srl::vector<srl::Matrix3<TypeParam>> inertias { this->inertia, this->inertia, this->inertia };
+    const srl::vector<srl::Matrix3<TypeParam>> inertiasBad { this->inertia, this->inertia, this->inertiaBad };
     srl::vector<srl::Matrix3<TypeParam>> expected;
     for (srl::uint idx = 0; idx < this->nJoints; idx += 1) {
-        srl::Matrix3<TypeParam> rot { srl::math::rotation(srl::Vector3<TypeParam> { this->rots.col(idx) }) };
+        const srl::Matrix3<TypeParam> rot { srl::math::rotation(srl::Vector3<TypeParam> { this->rots.col(idx) }) };
         expected.emplace_back(srl::math::adjoint(srl::Vector3<TypeParam> { this->principals.col(idx) }, rot));
     }
     // normal setting

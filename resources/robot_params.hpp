@@ -2,9 +2,7 @@
 #define SRL_ROBOT_PARAMS_HPP
 #pragma once
 
-#include <srl/common/concepts.hpp>
-#include <srl/common/constants.hpp>
-#include <srl/common/types.hpp>
+#include <srl/common/common.hpp>
 
 namespace srl::resources {
 // panda parameters for testing
