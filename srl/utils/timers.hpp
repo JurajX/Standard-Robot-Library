@@ -4,7 +4,6 @@
 
 #include <srl/common/common.hpp>
 
-
 #include <chrono>
 #include <string_view>
 #include <tuple>

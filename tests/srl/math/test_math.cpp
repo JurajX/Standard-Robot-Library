@@ -4,7 +4,6 @@
 
 #include <srl/common/common.hpp>
 
-
 #include <Eigen/Geometry>
 
 #include <limits>

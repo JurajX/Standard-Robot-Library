@@ -6,7 +6,6 @@
 
 #include <srl/common/common.hpp>
 
-
 #include <cmath>
 #include <tuple>
 
