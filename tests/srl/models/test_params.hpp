@@ -2,8 +2,7 @@
 #define SRL_MODELS_TEST_PARAMS_HPP
 #pragma once
 
-#include <srl/constants.hpp>
-#include <srl/types.hpp>
+#include <srl/common/common.hpp>
 
 namespace pendulum {
 // --------------- Single Pendulum

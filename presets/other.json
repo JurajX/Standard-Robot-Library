@@ -1,0 +1,44 @@
+{
+  "version": 5,
+
+  "include": [ "base.json" ],
+
+  "configurePresets": [
+    {
+      "name": "coverage",
+      "inherits": [ "base-clang" ],
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Coverage" }
+    },
+    {
+      "name": "tidy",
+      "inherits": [ "base-clang" ],
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Tidy" }
+    },
+    {
+      "name": "docs",
+      "inherits": [ "base-clang" ]
+    }
+  ],
+
+  "buildPresets": [
+    {
+      "name": "coverage",
+      "configurePreset": "coverage"
+    },
+    {
+      "name": "tidy",
+      "configurePreset": "tidy"
+    },
+    {
+      "name": "docs",
+      "configurePreset": "docs"
+    }
+  ],
+
+  "testPresets": [
+    {
+      "name": "coverage",
+      "configurePreset": "coverage"
+    }
+  ]
+}

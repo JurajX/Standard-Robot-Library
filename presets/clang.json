@@ -1,0 +1,38 @@
+{
+  "version": 5,
+
+  "include": [ "base.json" ],
+
+  "configurePresets": [
+    {
+      "name": "clang_debug",
+      "inherits": [ "base-clang", "debug" ]
+    },
+    {
+      "name": "clang_release",
+      "inherits": [ "base-clang", "release" ]
+    }
+  ],
+
+  "buildPresets": [
+    {
+      "name": "clang_debug",
+      "configurePreset": "clang_debug"
+    },
+    {
+      "name": "clang_release",
+      "configurePreset": "clang_release"
+    }
+  ],
+
+  "testPresets": [
+    {
+      "name": "clang_debug",
+      "configurePreset": "clang_debug"
+    },
+    {
+      "name": "clang_release",
+      "configurePreset": "clang_release"
+    }
+  ]
+}

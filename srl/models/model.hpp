@@ -2,9 +2,7 @@
 #define SRL_MODELS_HPP
 #pragma once
 
-#include <srl/concepts.hpp>
-#include <srl/constants.hpp>
-#include <srl/types.hpp>
+#include <srl/common/common.hpp>
 
 #include <string_view>
 

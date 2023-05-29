@@ -2,7 +2,7 @@
 #define SRL_TYPES_HPP
 #pragma once
 
-#include <srl/concepts.hpp>
+#include <srl/common/concepts.hpp>
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
@@ -19,8 +19,6 @@ namespace srl {
 /// @brief Typedef for unsigned int.
 using uint = unsigned int;
 
-//
-// ----- std types
 /// @brief Typedef for the standard library vector.
 using std::vector;
 

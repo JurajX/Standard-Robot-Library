@@ -1,0 +1,38 @@
+{
+  "version": 5,
+
+  "include": [ "base.json" ],
+
+  "configurePresets": [
+    {
+      "name": "gcc_debug",
+      "inherits": [ "base-gcc", "debug" ]
+    },
+    {
+      "name": "gcc_release",
+      "inherits": [ "base-gcc", "release" ]
+    }
+  ],
+
+  "buildPresets": [
+    {
+      "name": "gcc_debug",
+      "configurePreset": "gcc_debug"
+    },
+    {
+      "name": "gcc_release",
+      "configurePreset": "gcc_release"
+    }
+  ],
+
+  "testPresets": [
+    {
+      "name": "gcc_debug",
+      "configurePreset": "gcc_debug"
+    },
+    {
+      "name": "gcc_release",
+      "configurePreset": "gcc_release"
+    }
+  ]
+}

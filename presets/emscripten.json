@@ -1,0 +1,38 @@
+{
+  "version": 5,
+
+  "include": [ "base.json" ],
+
+  "configurePresets": [
+    {
+      "name": "ems_debug",
+      "inherits": ["base-emscripten", "debug"]
+    },
+    {
+      "name": "ems_release",
+      "inherits": ["base-emscripten", "release"]
+    }
+  ],
+
+  "buildPresets": [
+    {
+      "name": "ems_debug",
+      "configurePreset": "ems_debug"
+    },
+    {
+      "name": "ems_release",
+      "configurePreset": "ems_release"
+    }
+  ],
+
+  "testPresets": [
+    {
+      "name": "ems_debug",
+      "configurePreset": "ems_debug"
+    },
+    {
+      "name": "ems_release",
+      "configurePreset": "ems_release"
+    }
+  ]
+}

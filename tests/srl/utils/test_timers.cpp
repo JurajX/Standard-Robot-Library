@@ -2,7 +2,7 @@
 
 #include <srl/utils/timers.hpp>
 
-#include <srl/types.hpp>
+#include <srl/common/common.hpp>
 
 #include <chrono>
 #include <thread>

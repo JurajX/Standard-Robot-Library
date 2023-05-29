@@ -1,9 +1,9 @@
 set(
     HDRS
-    ${CMAKE_SOURCE_DIR}/srl/utils/data_gen.hpp
-    ${CMAKE_SOURCE_DIR}/srl/utils/data_gen-impl.hpp
-    ${CMAKE_SOURCE_DIR}/srl/utils/timers.hpp
-    ${CMAKE_SOURCE_DIR}/srl/utils/timers-impl.hpp
+    ${CMAKE_SOURCE_DIR}/srl/common/common.hpp
+    ${CMAKE_SOURCE_DIR}/srl/common/concepts.hpp
+    ${CMAKE_SOURCE_DIR}/srl/common/constants.hpp
+    ${CMAKE_SOURCE_DIR}/srl/common/types.hpp
 )
 
 install(
@@ -13,24 +13,24 @@ install(
 )
 
 add_library(
-    srl_utils INTERFACE
+    srl_common INTERFACE
     ${HDRS}
 )
 
 set_target_properties(
-    srl_utils PROPERTIES
+    srl_common PROPERTIES
     CXX_STANDARD 20
     CXX_STANDARD_REQUIRED ON
     CXX_EXTENSIONS OFF
 )
 
 target_link_libraries(
-    srl_utils
-    INTERFACE srl_common
+    srl_common
+    INTERFACE Eigen3::Eigen fmt::fmt
 )
 
 target_include_directories(
-    srl_utils INTERFACE
+    srl_common INTERFACE
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
     $<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}>
 )

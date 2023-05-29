@@ -2,9 +2,7 @@
 
 #include <srl/models/model.hpp>
 
-#include <srl/concepts.hpp>
-#include <srl/constants.hpp>
-#include <srl/types.hpp>
+#include <srl/common/common.hpp>
 
 #include <stdexcept>
 #include <utility>

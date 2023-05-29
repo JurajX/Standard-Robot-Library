@@ -1,15 +1,28 @@
 ---
 Checks: '
   bugprone-*,
+  cert-*,
   clang-*,
   concurrency-*,
   cppcoreguidelines-*,
+  darwin-*,
+  google-*,
+  hicpp-*,
+  llvm-*,
+  misc-*,
   modernize-*,
+  mpi-*,
   openmp-*,
   performance-*,
   portability-*,
-  readability-*
+  readability-*,
+  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
+  -hicpp-no-array-decay,
+  -cert-err58-cpp,
+  -bugprone-exception-escape,
+  -google-build-using-namespace,
 '
 WarningsAsErrors: ''
 HeaderFilterRegex: ''
-...
+UseColor: 'true'

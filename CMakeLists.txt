@@ -16,16 +16,9 @@ add_subdirectory(examples)
 add_subdirectory(tests)
 add_subdirectory(resources)
 
-if(MAKE_DOCS)
-    if(NOT DEFINED MAKE_DOC_PATH)
-        set(MAKE_DOC_PATH ${CMAKE_CURRENT_LIST_DIR}/build/docs)
-    endif()
-
-    add_docs(
-        NAME ${PROJECT_NAME}
-        FILE_DIRS srl
-        EXAMPLE_PATH examples
-        OUTPUT_DIRECTORY ${MAKE_DOC_PATH}
-        ENABLE_PREPROCESSING MACRO_EXPANSION
-    )
-endif(MAKE_DOCS)
+add_docs(
+    NAME ${PROJECT_NAME}
+    FILE_DIRS srl
+    EXAMPLE_PATH examples
+    ENABLE_PREPROCESSING MACRO_EXPANSION
+)
