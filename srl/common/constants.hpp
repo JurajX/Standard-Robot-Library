@@ -1,12 +1,12 @@
-#ifndef SRL_CONSTANTS_HPP
-#define SRL_CONSTANTS_HPP
+#ifndef SRL_COMMON_CONSTANTS_HPP
+#define SRL_COMMON_CONSTANTS_HPP
 #pragma once
 
 #include <srl/common/common.hpp>
 
 #include <numbers>
 
-namespace srl {
+namespace srl::constants {
 
 /// @brief Definition of epsilon, a constant for floating point precision.
 /// @tparam FP Floating point type.
@@ -41,43 +41,43 @@ inline constexpr float kPIf { std::numbers::pi_v<float> };
 /// @brief Definition of the 3-dim zero matrix.
 /// @tparam FP Floating point type.
 template<srl::concepts::floating_point FP>
-inline const Matrix3<FP> kMatrixZero3 { Matrix3<FP>::Zero() };
+inline const types::Matrix3<FP> kMatrixZero3 { types::Matrix3<FP>::Zero() };
 /// @brief Definition of the 3-dim zero matrix for double.
-inline const Matrix3d kMatrixZero3d { Matrix3d::Zero() };
+inline const types::Matrix3d kMatrixZero3d { types::Matrix3d::Zero() };
 /// @brief Definition of the 3-dim zero matrix for float.
-inline const Matrix3f kMatrixZero3f { Matrix3f::Zero() };
+inline const types::Matrix3f kMatrixZero3f { types::Matrix3f::Zero() };
 
 /// @brief Definition of the 3-dim identity matrix.
 /// @tparam FP Floating point type.
 template<srl::concepts::floating_point FP>
-inline const Matrix3<FP> kMatrixId3 { Matrix3<FP>::Identity() };
+inline const types::Matrix3<FP> kMatrixId3 { types::Matrix3<FP>::Identity() };
 /// @brief Definition of the 3-dim identity matrix for double.
-inline const Matrix3d kMatrixId3d { Matrix3d::Identity() };
+inline const types::Matrix3d kMatrixId3d { types::Matrix3d::Identity() };
 /// @brief Definition of the 3-dim identity matrix for float.
-inline const Matrix3f kMatrixId3f { Matrix3f::Identity() };
+inline const types::Matrix3f kMatrixId3f { types::Matrix3f::Identity() };
 
 /// @brief Definition of the 3-dim identity transformation.
 /// @tparam FP Floating point type.
 template<srl::concepts::floating_point FP>
-inline const Transform3<FP> kTransformId3 { Transform3<FP>::Identity() };
+inline const types::Transform3<FP> kTransformId3 { types::Transform3<FP>::Identity() };
 /// @brief Definition of the 3-dim identity transformation for double.
-inline const Transform3d kTransformId3d { Transform3d::Identity() };
+inline const types::Transform3d kTransformId3d { types::Transform3d::Identity() };
 /// @brief Definition of the 3-dim identity transformation for float.
-inline const Transform3f kTransformId3f { Transform3f::Identity() };
+inline const types::Transform3f kTransformId3f { types::Transform3f::Identity() };
 
 /// @brief Definition of the so3 generators.
 /// @tparam FP Floating point type.
 template<srl::concepts::floating_point FP>
-inline const srl::vector<Matrix3<FP>> kSo3 {
-    Matrix3<FP> { { 0, 0, 0 }, { 0, 0, -1 },  { 0, 1, 0 }},
-    Matrix3<FP> { { 0, 0, 1 },  { 0, 0, 0 }, { -1, 0, 0 }},
-    Matrix3<FP> {{ 0, -1, 0 },  { 1, 0, 0 },  { 0, 0, 0 }}
+inline const std::vector<types::Matrix3<FP>> kSo3 {
+    types::Matrix3<FP> { { 0, 0, 0 }, { 0, 0, -1 },  { 0, 1, 0 }},
+    types::Matrix3<FP> { { 0, 0, 1 },  { 0, 0, 0 }, { -1, 0, 0 }},
+    types::Matrix3<FP> {{ 0, -1, 0 },  { 1, 0, 0 },  { 0, 0, 0 }}
 };
 /// @brief Definition of the so3 generators for double.
-inline const srl::vector<Matrix3d> kSo3d { kSo3<double> };
+inline const std::vector<types::Matrix3d> kSo3d { kSo3<double> };
 /// @brief Definition of the so3 generators for float.
-inline const srl::vector<Matrix3f> kSo3f { kSo3<float> };
+inline const std::vector<types::Matrix3f> kSo3f { kSo3<float> };
 
-}    // namespace srl
+}    // namespace srl::constants
 
-#endif    // SRL_CONSTANTS_HPP
+#endif    // SRL_COMMON_CONSTANTS_HPP

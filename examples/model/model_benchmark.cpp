@@ -17,7 +17,7 @@ auto main(int /*argc*/, char ** /*argv*/) -> int    // NOLINT (bugprone-exceptio
     fmt::print("----- ----- Creating testing sets of size {}.\n", SIZE);
 
     using FP = double;
-    auto set { srl::utils::getRandVectors<FP>(SIZE, srl::resources::panda::numLinks, -srl::kPI<FP>, srl::kPI<FP>, true) };
+    auto set { srl::utils::getRandVectors<FP>(SIZE, srl::resources::panda::numLinks, -srl::constants::kPI<FP>, srl::constants::kPI<FP>, true) };
 
     fmt::print("----- ----- Creating the model\n");
     srl::model::RobotModel<FP> model {

@@ -19,13 +19,14 @@ public:
     /// @brief Typedef for internal reference to the template
     using Scalar = FP;
 
-    /// @brief Destroy the Robot Model object.
+    /// @brief Destructor.
     virtual ~RobotModel() = default;
 
     //
     // =============== =============== Constructors
 private:
     // --------------- helpers
+    // Initialises vectors<types::Map> with allocated data, so that they behave as tensors.
     auto init() -> void;
 
 public:
@@ -48,15 +49,15 @@ public:
      * @param normalise_joint_rotation_axes Determines if the 'joint_rotation_axes' parameter should be normalised before using.
      */
     RobotModel(
-      const srl::Matrix3X<FP> &joint_rotation_axes,
-      const srl::Matrix3X<FP> &link_lengths,
-      const srl::vector<FP> &link_masses,
-      const srl::Matrix3X<FP> &link_centres_of_mass,
-      const srl::vector<srl::Matrix3<FP>> &link_inertia_tensors,
-      const srl::vector<FP> &joint_coulomb_dampings,
-      const srl::QuatVec3<FP> &base_pose        = { srl::Quat<FP>::Identity(), srl::Vector3<FP>::Zero() },
-      const srl::Vector3<FP> &gravity_direction = { 0, 0, -1 },
-      const bool normalise_joint_rotation_axes  = false);
+      const srl::types::Matrix3X<FP> &joint_rotation_axes,
+      const srl::types::Matrix3X<FP> &link_lengths,
+      const std::vector<FP> &link_masses,
+      const srl::types::Matrix3X<FP> &link_centres_of_mass,
+      const std::vector<srl::types::Matrix3<FP>> &link_inertia_tensors,
+      const std::vector<FP> &joint_coulomb_dampings,
+      const srl::types::QuatVec3<FP> &base_pose        = { srl::types::Quat<FP>::Identity(), srl::types::Vector3<FP>::Zero() },
+      const srl::types::Vector3<FP> &gravity_direction = { 0, 0, -1 },
+      const bool normalise_joint_rotation_axes         = false);
 
     /**
      * @brief Construct a new Robot Model object.
@@ -77,23 +78,23 @@ public:
      * @param normalise_joint_rotation_axes Determines if the 'joint_rotation_axes' parameter should be normalised before using.
      */
     RobotModel(
-      const srl::Matrix3X<FP> &joint_rotation_axes,
-      const srl::Matrix3X<FP> &link_lengths,
-      const srl::vector<FP> &link_masses,
-      const srl::Matrix3X<FP> &link_centres_of_mass,
-      const srl::Matrix3X<FP> &principal_link_inertias,
-      const srl::Matrix3X<FP> &principal_rotations,
-      const srl::vector<FP> &joint_coulomb_dampings,
-      const srl::QuatVec3<FP> &base_pose        = { srl::Quat<FP>::Identity(), srl::Vector3<FP>::Zero() },
-      const srl::Vector3<FP> &gravity_direction = { 0, 0, -srl::kG<FP> },
-      const bool normalise_joint_rotation_axes  = false);
+      const srl::types::Matrix3X<FP> &joint_rotation_axes,
+      const srl::types::Matrix3X<FP> &link_lengths,
+      const std::vector<FP> &link_masses,
+      const srl::types::Matrix3X<FP> &link_centres_of_mass,
+      const srl::types::Matrix3X<FP> &principal_link_inertias,
+      const srl::types::Matrix3X<FP> &principal_rotations,
+      const std::vector<FP> &joint_coulomb_dampings,
+      const srl::types::QuatVec3<FP> &base_pose        = { srl::types::Quat<FP>::Identity(), srl::types::Vector3<FP>::Zero() },
+      const srl::types::Vector3<FP> &gravity_direction = { 0, 0, -srl::constants::kG<FP> },
+      const bool normalise_joint_rotation_axes         = false);
 
     /**
      * @brief Construct a new Robot Model object.
      *
      * @param number_of_joints The number of joints.
      */
-    RobotModel(const srl::uint &number_of_joints = 0);
+    RobotModel(const uint32_t &number_of_joints = 0);
 
     //
     // =============== =============== Kinematics Calculations
@@ -107,8 +108,8 @@ private:
     // Perform inclusive (multiplication) scan on qRots_ and save the results back to qRots_. This represents rotations of joint frames.
     auto scanRots(const bool wrt_rbt_base = false) -> void;
 
-    // Performs vPos_[i+1] = vPos_[i] + qRots_[i] * frameCoos_[i]. This represents translations of joint frames. The 0-th element represents the base
-    // translation.
+    // Performs vPos_[i+1] = vPos_[i] + qRots_[i] * frameCoos_[i]. This represents translations of joint frames.
+    // The 0-th element represents the base translation.
     auto populatePos(const bool wrt_rbt_base) -> void;
 
     // Calls populateRots, scanRots, and populatePos consecutively.
@@ -134,12 +135,12 @@ public:
      *
      * @tparam Container Indexable container type holding the joint angles.
      * @param joint_angles Joint angles for which to compute the forward kinematics.
-     * @param wrt_rbt_base If true, the computation is performed with respect to the robot base, hence, the robot base position and orientation is not
-     * considered in the calculation. Otherwise, the result is 'pre-transformed' by the position and orientation of the base.
-     * @return srl::QuatVec3<FP> The position and orientation of the flange.
+     * @param wrt_rbt_base If true, the computation is performed with respect to the robot base, hence, the robot base position and orientation
+     * is not considered in the calculation. Otherwise, the result is 'pre-transformed' by the position and orientation of the base.
+     * @return srl::types::QuatVec3<FP> The position and orientation of the flange.
      */
     template<srl::concepts::indexable Container>
-    auto fkQuat(const Container &joint_angles, const bool wrt_rbt_base = false) -> srl::QuatVec3<FP>;
+    auto fkQuat(const Container &joint_angles, const bool wrt_rbt_base = false) -> srl::types::QuatVec3<FP>;
 
     /**
      * @brief Compute the forward kinematics of the flange.
@@ -152,10 +153,10 @@ public:
      * @tparam Container Indexable container type holding the joint angles.
      * @param joint_angles Joint angles for which to compute the forward kinematics.
      * @param wrt_rbt_base Indicates with respect to which frame is the computation performed. (For detail see RobotModel::fkQuat.)
-     * @return srl::Transform3<FP> The position and orientation of the flange.
+     * @return srl::types::Transform3<FP> The position and orientation of the flange.
      */
     template<srl::concepts::indexable Container>
-    auto fk(const Container &joint_angles, const bool wrt_rbt_base = false) -> srl::Transform3<FP>;
+    auto fk(const Container &joint_angles, const bool wrt_rbt_base = false) -> srl::types::Transform3<FP>;
 
     // --------------- all FK
 
@@ -172,10 +173,11 @@ public:
      * @tparam Container Indexable container type holding the joint angles.
      * @param joint_angles Joint angles for which to compute the forward kinematics.
      * @param wrt_rbt_base Indicates with respect to which frame is the computation performed. (For detail see RobotModel::fkQuat.)
-     * @return srl::vector<srl::QuatVec3<FP>>& A vector reference containing position and orientation of each link of the robot (incl. the base).
+     * @return std::vector<srl::types::QuatVec3<FP>>& A vector reference containing position and orientation of each link of the robot (incl. the
+     * base).
      */
     template<srl::concepts::indexable Container>
-    auto fkAllQuat(const Container &joint_angles, const bool wrt_rbt_base = false) -> const srl::vector<srl::QuatVec3<FP>> &;
+    auto fkAllQuat(const Container &joint_angles, const bool wrt_rbt_base = false) -> const std::vector<srl::types::QuatVec3<FP>> &;
 
     /**
      * @brief Compute the forward kinematics of each link.
@@ -190,10 +192,11 @@ public:
      * @tparam Container Indexable container type holding the joint angles.
      * @param joint_angles Joint angles for which to compute the forward kinematics.
      * @param wrt_rbt_base Indicates with respect to which frame is the computation performed. (For detail see RobotModel::fkQuat.)
-     * @return srl::vector<srl::Transform3<FP>>& A vector reference containing position and orientation of each link of the robot (incl. the base).
+     * @return std::vector<srl::types::Transform3<FP>>& A vector reference containing position and orientation of each link of the robot (incl. the
+     * base).
      */
     template<srl::concepts::indexable Container>
-    auto fkAll(const Container &joint_angles, const bool wrt_rbt_base = false) -> const srl::vector<srl::Transform3<FP>> &;
+    auto fkAll(const Container &joint_angles, const bool wrt_rbt_base = false) -> const std::vector<srl::types::Transform3<FP>> &;
 
     //
     // =============== =============== Dynamics Calculations
@@ -237,10 +240,10 @@ public:
      *
      * @tparam Container Indexable container type holding the joint angles.
      * @param joint_angles Joint angles for which to compute the mass matrix and potential energy.
-     * @return std::tuple<srl::MatrixX<FP>, FP> The mass matrix and potential energy.
+     * @return std::tuple<srl::types::MatrixX<FP>, FP> The mass matrix and potential energy.
      */
     template<srl::concepts::indexable Container>
-    auto getMassMatrixAndPotEnergy(const Container &joint_angles) -> std::tuple<srl::MatrixX<FP>, FP>;
+    auto getMassMatrixAndPotEnergy(const Container &joint_angles) -> std::tuple<srl::types::MatrixX<FP>, FP>;
 
     /**
      * @brief Calculate the Lagrangian of the robot for the given joint configuration.
@@ -263,7 +266,7 @@ public:
      * configuration; the derivatives are wrt. each joint angle.
      *
      * The returned values are as follows:
-     *  - The first element in the returned tuple contains mass matrix, M, and its derivatives:
+     *  - The first element in the returned tuple contains mass matrix, \f$ M \f$, and its derivatives:
      *    - \f$ (M, \frac{\partial M}{\partial \theta_1}, \cdots, \frac{\partial M}{\partial \theta_n}) \f$, where \f$ n \f$ is the number of joints.
      *  - The second element in the returned tuple contains the Christoffel symbols, \f$ \Gamma \f$:
      *    - \f$ (\Gamma_{1jk}, \cdots, \Gamma_{njk}) \f$, where \f$ n \f$ is the number of joints.
@@ -279,12 +282,15 @@ public:
      *
      * @tparam Container Indexable container type holding the joint angles and velocities.
      * @param joint_angles Joint angles for which to compute the Lagrangian.
-     * @return std::tuple<const srl::vector<srl::Map<srl::MatrixX<FP>>>, const srl::vector<srl::Map<srl::MatrixX<FP>>>, const srl::VectorX<FP>>
-     * The mass matrix with derivatives, the Christoffel symbols, and the potential energy with derivatives, respectively.
+     * @return std::tuple<const std::vector<srl::types::Map<srl::types::MatrixX<FP>>>, const std::vector<srl::types::Map<srl::types::MatrixX<FP>>>,
+     * const srl::types::VectorX<FP>> The mass matrix with derivatives, the Christoffel symbols, and the potential energy with derivatives,
+     * respectively.
      */
     template<srl::concepts::indexable Container>
-    auto getEomParams(const Container &joint_angles)
-      -> std::tuple<const srl::vector<srl::Map<srl::MatrixX<FP>>>, const srl::vector<srl::Map<srl::MatrixX<FP>>>, const srl::VectorX<FP>>;
+    auto getEomParams(const Container &joint_angles) -> std::tuple<
+      const std::vector<srl::types::Map<srl::types::MatrixX<FP>>>,
+      const std::vector<srl::types::Map<srl::types::MatrixX<FP>>>,
+      const srl::types::VectorX<FP>>;
 
     /**
      * @brief Calculate the inverse dynamics of the robot.
@@ -298,10 +304,11 @@ public:
      * @param joint_angles Joint angles for which to compute the inverse dynamics.
      * @param joint_velocities Joint velocities for which to compute the inverse dynamics.
      * @param joint_accelerations Joint accelerations for which to compute the inverse dynamics.
-     * @return srl::VectorX<FP> The motor torques 'necessary to follow' the provided angles, velocities, and accelerations.
+     * @return srl::types::VectorX<FP> The motor torques 'necessary to follow' the provided angles, velocities, and accelerations.
      */
     template<srl::concepts::indexable Container>
-    auto getMotorTorque(const Container &joint_angles, const Container &joint_velocities, const Container &joint_accelerations) -> srl::VectorX<FP>;
+    auto getMotorTorque(const Container &joint_angles, const Container &joint_velocities, const Container &joint_accelerations)
+      -> srl::types::VectorX<FP>;
 
     /**
      * @brief Calculate the forward dynamics of the robot.
@@ -315,10 +322,11 @@ public:
      * @param joint_angles Joint angles for which to compute the forward dynamics.
      * @param joint_velocities Joint velocities for which to compute the forward dynamics.
      * @param motor_torques Motor torques for which to compute the forward dybamics.
-     * @return srl::VectorX<FP> The joint accelerations resulting from the provided angles, velocities, and motor torques.
+     * @return srl::types::VectorX<FP> The joint accelerations resulting from the provided angles, velocities, and motor torques.
      */
     template<srl::concepts::indexable Container>
-    auto getAngularAcceleration(const Container &joint_angles, const Container &joint_velocities, const Container &motor_torques) -> srl::VectorX<FP>;
+    auto getAngularAcceleration(const Container &joint_angles, const Container &joint_velocities, const Container &motor_torques)
+      -> srl::types::VectorX<FP>;
 
     //
     // =============== =============== Jacobian Calculations
@@ -335,101 +343,101 @@ public:
      *
      * @tparam Container Indexable container type holding the joint angles, velocities, and motor torques.
      * @param joint_angles Joint angles for which to compute the forward dynamics.
-     * @return std::tuple<const srl::vector<srl::Map<srl::MatrixX<FP>>>, const srl::vector<srl::Map<srl::MatrixX<FP>>>>
+     * @return std::tuple<const std::vector<srl::types::Map<srl::types::MatrixX<FP>>>, const std::vector<srl::types::Map<srl::types::MatrixX<FP>>>>
      * The derivatives of the rotation matrix, the derivatives of the frame coordinates, respectively.
      */
     template<srl::concepts::indexable Container>
     auto getJacobian(const Container &joint_angles)
-      -> std::tuple<const srl::vector<srl::Map<srl::MatrixX<FP>>>, const srl::vector<srl::Map<srl::MatrixX<FP>>>>;
+      -> std::tuple<const std::vector<srl::types::Map<srl::types::MatrixX<FP>>>, const std::vector<srl::types::Map<srl::types::MatrixX<FP>>>>;
 
     //
     // =============== =============== Setters and Getters
 public:
     /// @brief Get the number of joints of the robot.
-    /// @return srl::uint The number of joints.
-    auto getNumberOfJoints() -> srl::uint;
+    /// @return uint32_t The number of joints.
+    auto getNumberOfJoints() -> uint32_t;
     /// @brief Get the number of links of the robot.
-    /// @return srl::uint The number of links.
-    auto getNumberOfLinks() -> srl::uint;
+    /// @return uint32_t The number of links.
+    auto getNumberOfLinks() -> uint32_t;
 
     /// @brief Set the rotation axes of joints.
     /// @param joint_rotation_axes The rotation axes the be set.
     /// @param normalise If the given axes should be normalised (the set axes must be normalised).
-    auto setJointRotationAxes(const srl::Matrix3X<FP> &joint_rotation_axes, const bool normalise = false) -> void;
+    auto setJointRotationAxes(const srl::types::Matrix3X<FP> &joint_rotation_axes, const bool normalise = false) -> void;
     /// @brief Get the rotation axes of joints.
-    /// @return srl::Matrix3X<FP> The rotation axes.
-    auto getJointRotationAxes() -> srl::Matrix3X<FP>;
+    /// @return srl::types::Matrix3X<FP> The rotation axes.
+    auto getJointRotationAxes() -> srl::types::Matrix3X<FP>;
 
     /// @brief Set the length vectors of the links.
     /// @param link_lengths The length vectors to be set. (See also RobotModel::RobotModel)
-    auto setLinkLengths(const srl::Matrix3X<FP> &link_lengths) -> void;
+    auto setLinkLengths(const srl::types::Matrix3X<FP> &link_lengths) -> void;
     /// @brief Get the length vectors of the links.
-    /// @return srl::Matrix3X<FP> The length vectors. (See also RobotModel::RobotModel)
-    auto getLinkLengths() -> srl::Matrix3X<FP>;
+    /// @return srl::types::Matrix3X<FP> The length vectors. (See also RobotModel::RobotModel)
+    auto getLinkLengths() -> srl::types::Matrix3X<FP>;
 
     /// @brief Set the link masses.
     /// @param link_masses The link masses to be set.
     template<srl::concepts::indexable Container>
     auto setLinkMasses(const Container &link_masses) -> void;
     /// @brief Get the link masses.
-    /// @return srl::vector<FP> The link masses.
-    auto getLinkMasses() -> srl::VectorX<FP>;
+    /// @return std::vector<FP> The link masses.
+    auto getLinkMasses() -> srl::types::VectorX<FP>;
 
     /// @brief Set the centres of mass of the links.
     /// @param link_centres_of_mass The centres of mass to be set.
-    auto setLinkCentresOfMasses(const srl::Matrix3X<FP> &link_centres_of_mass) -> void;
+    auto setLinkCentresOfMasses(const srl::types::Matrix3X<FP> &link_centres_of_mass) -> void;
     /// @brief Get the centres of mass of the links.
-    /// @return srl::Matrix3X<FP> The centres of mass.
-    auto getLinkCentresOfMasses() -> srl::Matrix3X<FP>;
+    /// @return srl::types::Matrix3X<FP> The centres of mass.
+    auto getLinkCentresOfMasses() -> srl::types::Matrix3X<FP>;
 
     /// @brief Set the inertia tensors of the links.
     /// The inertia tensor must be symmetric, positive-definite, matrix with its principal axes fulfilling the friangle inequalities.
     /// @param link_inertia_tensors The inertia tensors to be set.
-    auto setLinkInertiaTensors(const srl::vector<srl::Matrix3<FP>> &link_inertia_tensors) -> void;
+    auto setLinkInertiaTensors(const std::vector<srl::types::Matrix3<FP>> &link_inertia_tensors) -> void;
     /// @brief Set the inertia tensors of the links.
     /// The principal axes must fulfill the friangle inequalities.
     /// @param principal_link_inertias The principal components of the inertias of each moving link.
     /// @param principal_rotations The rotations of the principal components to the frame associated with the link.
-    auto setLinkInertiaTensors(const srl::Matrix3X<FP> &principal_link_inertias, const srl::Matrix3X<FP> &principal_rotations) -> void;
+    auto setLinkInertiaTensors(const srl::types::Matrix3X<FP> &principal_link_inertias, const srl::types::Matrix3X<FP> &principal_rotations) -> void;
     /// @brief Get the inertia tensors of the links.
-    /// @return srl::vector<srl::Matrix3<FP>> The inertia tensors.
-    auto getLinkInertiaTensors() -> srl::vector<srl::Matrix3<FP>>;
+    /// @return std::vector<srl::types::Matrix3<FP>> The inertia tensors.
+    auto getLinkInertiaTensors() -> std::vector<srl::types::Matrix3<FP>>;
 
     /// @brief Set the Coulomb dampings for the joints.
     /// @param joint_coulomb_dampings The Coulomb dampings to be set.
     template<srl::concepts::indexable Container>
     auto setJointDampings(const Container &joint_coulomb_dampings) -> void;
     /// @brief Get the Coulomb dampings for the joints.
-    /// @return srl::vector<FP> The Coulomb dampings.
-    auto getJointDampings() -> srl::VectorX<FP>;
+    /// @return std::vector<FP> The Coulomb dampings.
+    auto getJointDampings() -> srl::types::VectorX<FP>;
 
     /// @brief Set the direction of the gravity acceleration.
     /// @param gravity_direction The direction to be set.
-    auto setGravityAcc(const srl::Vector3<FP> &gravity_direction) -> void;
+    auto setGravityAcc(const srl::types::Vector3<FP> &gravity_direction) -> void;
     /// @brief Get the direction of the gravity acceleration.
-    /// @return srl::Vector3<FP> The direction of the gravity acceleration.
-    auto getGravityAcc() -> srl::Vector3<FP>;
+    /// @return srl::types::Vector3<FP> The direction of the gravity acceleration.
+    auto getGravityAcc() -> srl::types::Vector3<FP>;
 
     /// @brief Set the base position and rotation.
     /// @param base_tf The base position and rotation to be set.
-    auto setBaseTransform(const srl::Transform3<FP> &base_tf) -> void;
+    auto setBaseTransform(const srl::types::Transform3<FP> &base_tf) -> void;
     /// @brief Get the base position and rotation.
-    /// @return srl::Transform3<FP> The base position and rotation.
-    auto getBaseTransform() -> srl::Transform3<FP>;
+    /// @return srl::types::Transform3<FP> The base position and rotation.
+    auto getBaseTransform() -> srl::types::Transform3<FP>;
 
     /// @brief Set the base position and rotation.
     /// @param base_pose The base position and rotation to be set.
-    auto setBasePose(const srl::QuatVec3<FP> &base_pose) -> void;
+    auto setBasePose(const srl::types::QuatVec3<FP> &base_pose) -> void;
     /// @brief Get the base position and rotation.
-    /// @return srl::QuatVec3<FP> The base position and rotation.
-    auto getBasePose() -> srl::QuatVec3<FP>;
+    /// @return srl::types::QuatVec3<FP> The base position and rotation.
+    auto getBasePose() -> srl::types::QuatVec3<FP>;
 
     //
     // =============== =============== Helpers
 private:
     // Create vector of inertia tensors from provided principal inertias and their rotations.
-    auto static makeLinkInertiaTensors(const srl::Matrix3X<FP> &principal_link_inertias, const srl::Matrix3X<FP> &principal_rotations)
-      -> srl::vector<srl::Matrix3<FP>>;
+    auto static makeLinkInertiaTensors(const srl::types::Matrix3X<FP> &principal_link_inertias, const srl::types::Matrix3X<FP> &principal_rotations)
+      -> std::vector<srl::types::Matrix3<FP>>;
 
     // Check the actual value against desired values and throw if not equal.
     template<srl::concepts::integral T>
@@ -439,61 +447,56 @@ private:
     //
     // =============== =============== Members
 private:
-    static inline constexpr srl::uint kDim { srl::kDim };
-    static inline const srl::vector<srl::Matrix3<FP>> kSo3 { srl::kSo3<FP> };
+    static inline constexpr uint32_t kDim_ { srl::constants::kDim };
+    static inline const std::vector<srl::types::Matrix3<FP>> kSo3 { srl::constants::kSo3<FP> };
 
     // --------------- size variables
-    srl::uint const kNumJoints_;
-    srl::uint const kNumLinks_ { kNumJoints_ + 1 };
-    srl::uint const kNumJointsDims_ { kNumJoints_ * kDim };
+    uint32_t const kNumJoints_;
+    uint32_t const kNumLinks_ { kNumJoints_ + 1 };
+    uint32_t const kNumJointsDims_ { kNumJoints_ * kDim_ };
 
     // --------------- set/get -able variables
-    srl::Vector3<FP> gravityAcc_;
-    srl::Matrix3X<FP> jointRotationAxes_;
-    srl::vector<srl::Matrix3<FP>> So3Axes_ { kNumJoints_ };
-    srl::Matrix3X<FP> frameCoos_;
-    srl::QuatVec3<FP> basePose_ { srl::Quat<FP>::Identity(), srl::Vector3<FP>::Zero() };
-    srl::VectorX<FP> linkMasses_ { srl::VectorX<FP>::Zero(kNumJoints_) };
-    srl::Matrix3X<FP> linkCoMs_;
-    srl::vector<srl::Matrix3<FP>> linkInertias_;
-    srl::VectorX<FP> jointDamping_ { srl::VectorX<FP>::Zero(kNumJoints_) };
+    srl::types::Vector3<FP> gravityAcc_;
+    srl::types::Matrix3X<FP> jointRotationAxes_;
+    std::vector<srl::types::Matrix3<FP>> So3Axes_ { kNumJoints_ };
+    srl::types::Matrix3X<FP> frameCoos_;
+    srl::types::QuatVec3<FP> basePose_ { srl::types::Quat<FP>::Identity(), srl::types::Vector3<FP>::Zero() };
+    srl::types::VectorX<FP> linkMasses_ { srl::types::VectorX<FP>::Zero(kNumJoints_) };
+    srl::types::Matrix3X<FP> linkCoMs_;
+    std::vector<srl::types::Matrix3<FP>> linkInertias_;
+    srl::types::VectorX<FP> jointDamping_ { srl::types::VectorX<FP>::Zero(kNumJoints_) };
 
     // --------------- variables derived from set/get -able (used for calculation speed-up)
-    srl::MatrixX<FP> frameCoosAndLinkCoM_ { srl::MatrixX<FP>::Zero(kNumJointsDims_, kNumJoints_) };
-    srl::MatrixX<FP> frameCoosTriu_ { srl::MatrixX<FP>::Zero(kNumJointsDims_, kNumJoints_) };
-    srl::VectorX<FP> linkMassVec_ { srl::VectorX<FP>::Zero(kNumJointsDims_) };
+    srl::types::MatrixX<FP> frameCoosAndLinkCoM_ { srl::types::MatrixX<FP>::Zero(kNumJointsDims_, kNumJoints_) };
+    srl::types::MatrixX<FP> frameCoosTriu_ { srl::types::MatrixX<FP>::Zero(kNumJointsDims_, kNumJoints_) };
+    srl::types::VectorX<FP> linkMassVec_ { srl::types::VectorX<FP>::Zero(kNumJointsDims_) };
 
     // --------------- internal state variables for computations
-    srl::vector<srl::Quat<FP>> qRots_ { kNumLinks_ + 1 };
-    srl::Matrix3X<FP> vPos_ { kDim, kNumLinks_ + 1 };
-    srl::vector<srl::QuatVec3<FP>> frameQuatVec3s_ { kNumLinks_ + 1 };
-    srl::vector<srl::Transform3<FP>> frameTfs_ { kNumLinks_ + 1 };
+    std::vector<srl::types::Quat<FP>> qRots_ { kNumLinks_ + 1 };
+    srl::types::Matrix3X<FP> vPos_ { kDim_, kNumLinks_ + 1 };
+    std::vector<srl::types::QuatVec3<FP>> frameQuatVec3s_ { kNumLinks_ + 1 };
+    std::vector<srl::types::Transform3<FP>> frameTfs_ { kNumLinks_ + 1 };
 
-    srl::MatrixX<FP> dataCooTf_ { srl::MatrixX<FP>::Zero(kNumJointsDims_ * kNumJointsDims_, kNumLinks_) };
-    srl::MatrixX<FP> dataComTfed_ { srl::MatrixX<FP>::Zero(kNumJointsDims_ * kNumJoints_, kNumLinks_) };
-    srl::MatrixX<FP> dataFrameCoosTfed_ { srl::MatrixX<FP>::Zero(kNumJointsDims_ * kNumJoints_, kNumLinks_) };
-    srl::MatrixX<FP> dataRotAxesTfed_ { srl::MatrixX<FP>::Zero(kNumJoints_ * kNumJointsDims_, kNumLinks_) };
-    srl::MatrixX<FP> rotAxesTfedInertia_ { srl::MatrixX<FP>::Zero(kNumJoints_, kNumJointsDims_) };
-    srl::MatrixX<FP> dataQhLcT_ { srl::MatrixX<FP>::Zero(kNumJoints_ * kNumJointsDims_, kNumLinks_) };
-    srl::MatrixX<FP> qhLcTmass_ { srl::MatrixX<FP>::Zero(kNumJoints_, kNumJointsDims_) };
-    srl::MatrixX<FP> dataMassMatrix_ { srl::MatrixX<FP>::Zero(kNumJoints_ * kNumJoints_, kNumLinks_) };
-    srl::MatrixX<FP> dataChristoffelSymbols_ { srl::MatrixX<FP>::Zero(kNumJoints_ * kNumJoints_, kNumJoints_) };
-    srl::VectorX<FP> potEnergy_ { srl::VectorX<FP>::Zero(kNumLinks_) };
-    srl::VectorX<FP> torques_ { srl::VectorX<FP>::Zero(kNumJoints_) };
+    srl::types::MatrixX<FP> dataCooTf_ { srl::types::MatrixX<FP>::Zero(kNumJointsDims_ * kNumJointsDims_, kNumLinks_) };
+    srl::types::MatrixX<FP> dataComTfed_ { srl::types::MatrixX<FP>::Zero(kNumJointsDims_ * kNumJoints_, kNumLinks_) };
+    srl::types::MatrixX<FP> dataFrameCoosTfed_ { srl::types::MatrixX<FP>::Zero(kNumJointsDims_ * kNumJoints_, kNumLinks_) };
+    srl::types::MatrixX<FP> dataRotAxesTfed_ { srl::types::MatrixX<FP>::Zero(kNumJoints_ * kNumJointsDims_, kNumLinks_) };
+    srl::types::MatrixX<FP> rotAxesTfedInertia_ { srl::types::MatrixX<FP>::Zero(kNumJoints_, kNumJointsDims_) };
+    srl::types::MatrixX<FP> dataQhLcT_ { srl::types::MatrixX<FP>::Zero(kNumJoints_ * kNumJointsDims_, kNumLinks_) };
+    srl::types::MatrixX<FP> qhLcTmass_ { srl::types::MatrixX<FP>::Zero(kNumJoints_, kNumJointsDims_) };
+    srl::types::MatrixX<FP> dataMassMatrix_ { srl::types::MatrixX<FP>::Zero(kNumJoints_ * kNumJoints_, kNumLinks_) };
+    srl::types::MatrixX<FP> dataChristoffelSymbols_ { srl::types::MatrixX<FP>::Zero(kNumJoints_ * kNumJoints_, kNumJoints_) };
+    srl::types::VectorX<FP> potEnergy_ { srl::types::VectorX<FP>::Zero(kNumLinks_) };
+    srl::types::VectorX<FP> torques_ { srl::types::VectorX<FP>::Zero(kNumJoints_) };
 
-    srl::vector<srl::Map<srl::MatrixX<FP>>> cooTf_;                 // linked to dataCooTf_
-    srl::vector<srl::Map<srl::MatrixX<FP>>> comTfed_;               // linked to dataComTfed_
-    srl::vector<srl::Map<srl::MatrixX<FP>>> frameCoosTfed_;         // linked to dataFrameCoosTfed_
-    srl::vector<srl::Map<srl::MatrixX<FP>>> rotAxesTfed_;           // linked to dataRotAxesTfed_
-    srl::vector<srl::Map<srl::MatrixX<FP>>> qhLcT_;                 // linked to dataQhLcT_
-    srl::vector<srl::Map<srl::MatrixX<FP>>> massMatrix_;            // linked to dataMassMatrix_
-    srl::vector<srl::Map<srl::MatrixX<FP>>> christoffelSymbols_;    // linked to dataChristoffelSymbols_
+    std::vector<srl::types::Map<srl::types::MatrixX<FP>>> cooTf_;                 // linked to dataCooTf_
+    std::vector<srl::types::Map<srl::types::MatrixX<FP>>> comTfed_;               // linked to dataComTfed_
+    std::vector<srl::types::Map<srl::types::MatrixX<FP>>> frameCoosTfed_;         // linked to dataFrameCoosTfed_
+    std::vector<srl::types::Map<srl::types::MatrixX<FP>>> rotAxesTfed_;           // linked to dataRotAxesTfed_
+    std::vector<srl::types::Map<srl::types::MatrixX<FP>>> qhLcT_;                 // linked to dataQhLcT_
+    std::vector<srl::types::Map<srl::types::MatrixX<FP>>> massMatrix_;            // linked to dataMassMatrix_
+    std::vector<srl::types::Map<srl::types::MatrixX<FP>>> christoffelSymbols_;    // linked to dataChristoffelSymbols_
 };
-
-/// @brief Typedef for double Robot Model
-using RobotModeld = RobotModel<double>;
-/// @brief Typedef for float Robot Model
-using RobotModelf = RobotModel<float>;
 
 }    // namespace srl::model
 

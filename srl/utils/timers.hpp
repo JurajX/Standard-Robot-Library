@@ -30,7 +30,7 @@ auto printDuration(const std::chrono::duration<double, std::nano> &duration, con
  */
 template<class Fn, class... Args>
 requires srl::concepts::invocable<Fn, Args...>
-auto timeFn(std::string_view msg, Fn &&fn, srl::vector<std::tuple<Args...>> &args_vec) -> void;
+auto timeFn(std::string_view msg, Fn &&fn, std::vector<std::tuple<Args...>> &args_vec) -> void;
 
 /**
  * @brief Time a function taking a single argument.
@@ -48,7 +48,7 @@ auto timeFn(std::string_view msg, Fn &&fn, srl::vector<std::tuple<Args...>> &arg
  */
 template<class Fn, class Arg>
 requires srl::concepts::invocable<Fn, Arg>
-auto timeFn(std::string_view msg, Fn &&fn, srl::vector<Arg> &arg_vec) -> void;
+auto timeFn(std::string_view msg, Fn &&fn, std::vector<Arg> &arg_vec) -> void;
 
 /**
  * @brief Time a function taking no arguments.

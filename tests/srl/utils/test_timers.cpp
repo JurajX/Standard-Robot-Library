@@ -15,8 +15,8 @@ protected:
     TestTimers();
     const static inline auto delay { 100us };
     const static inline size_t set_size { 100 };
-    srl::vector<int> set { set_size, 1 };                   // NOLINT
-    srl::vector<std::tuple<int, int>> set1 { set_size };    // NOLINT
+    std::vector<int> set { set_size, 1 };                   // NOLINT
+    std::vector<std::tuple<int, int>> set1 { set_size };    // NOLINT
 };
 
 TestTimers::TestTimers()

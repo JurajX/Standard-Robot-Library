@@ -23,10 +23,10 @@ auto main(int /*argc*/, char ** /*argv*/) -> int    // NOLINT (bugprone-exceptio
         srl::resources::panda::damping<FP>
     };
     const size_t nDoF { model.getNumberOfJoints() };
-    const srl::vector<FP> angles(nDoF, 1.1);
-    const srl::vector<FP> velocities(nDoF, 1.1);
-    const srl::vector<FP> accelerations(nDoF, 1.1);
-    const srl::vector<FP> mot(nDoF, 1.1);
+    const std::vector<FP> angles(nDoF, 1.1);
+    const std::vector<FP> velocities(nDoF, 1.1);
+    const std::vector<FP> accelerations(nDoF, 1.1);
+    const std::vector<FP> mot(nDoF, 1.1);
 
     //
     // =============== =============== Kinematics Examples
@@ -35,7 +35,7 @@ auto main(int /*argc*/, char ** /*argv*/) -> int    // NOLINT (bugprone-exceptio
     {
         /// [example_fkQuat]
         // srl::model::RobotModel<FP> model { /* ... model parameters for nDoF robot ... */ };
-        const srl::QuatVec3<FP> flange { model.fkQuat(angles) };
+        const srl::types::QuatVec3<FP> flange { model.fkQuat(angles) };
         std::cout << "The rotation of the flange is " << flange.first << ".\n";
         std::cout << "The position of the flange is " << flange.second.transpose() << ".\n";
         /// [example_fkQuat]
@@ -51,7 +51,7 @@ auto main(int /*argc*/, char ** /*argv*/) -> int    // NOLINT (bugprone-exceptio
     {
         /// [example_fk]
         // srl::model::RobotModel<FP> model { /* ... model parameters for nDoF robot ... */ };
-        const srl::Transform3<FP> flange { model.fk(angles) };
+        const srl::types::Transform3<FP> flange { model.fk(angles) };
         std::cout << "The rotation of the flange is\n" << flange.linear() << "\n";
         std::cout << "The position of the flange is " << flange.translation().transpose() << ".\n";
         /// [example_fk]
@@ -169,7 +169,7 @@ auto main(int /*argc*/, char ** /*argv*/) -> int    // NOLINT (bugprone-exceptio
     {
         /// [example_getMotorTorque]
         // srl::model::RobotModel<FP> model { /* ... model parameters for nDoF robot ... */ };
-        const srl::VectorX<FP> motor_torques { model.getMotorTorque(angles, velocities, accelerations) };
+        const srl::types::VectorX<FP> motor_torques { model.getMotorTorque(angles, velocities, accelerations) };
         std::cout << "The motor torques needed for sustaining the given angles, velocities, and accelerations are: \n"
                   << motor_torques.transpose() << "\n";
         /// [example_getMotorTorque]
@@ -185,7 +185,7 @@ auto main(int /*argc*/, char ** /*argv*/) -> int    // NOLINT (bugprone-exceptio
     {
         /// [example_getAngularAcceleration]
         // srl::model::RobotModel<FP> model { /* ... model parameters for nDoF robot ... */ };
-        const srl::VectorX<FP> angular_accelerationss { model.getAngularAcceleration(angles, velocities, mot) };
+        const srl::types::VectorX<FP> angular_accelerationss { model.getAngularAcceleration(angles, velocities, mot) };
         std::cout << "The resulting angular accelerationss when in the state angles, velocities and applying the given motor torques are: \n"
                   << angular_accelerationss.transpose() << "\n";
         /// [example_getAngularAcceleration]

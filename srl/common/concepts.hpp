@@ -1,5 +1,5 @@
-#ifndef SRL_CONCEPTS_HPP
-#define SRL_CONCEPTS_HPP
+#ifndef SRL_COMMON_CONCEPTS_HPP
+#define SRL_COMMON_CONCEPTS_HPP
 #pragma once
 
 #include <Eigen/Core>
@@ -52,4 +52,4 @@ concept indexable = requires(T x, size_t idx) {
 
 }    // namespace srl::concepts
 
-#endif    // SRL_CONCEPTS_HPP
+#endif    // SRL_COMMON_CONCEPTS_HPP

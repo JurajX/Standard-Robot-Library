@@ -20,10 +20,11 @@ namespace srl::utils {
  * @param low The lower bound on the reandom values.
  * @param high The upper bound on the random values.
  * @param deterministic If true, the seed of the generator is set to 0.
- * @return srl::vector<srl::VectorX<FP>> The randomly generated set of vectors.
+ * @return std::vector<srl::types::VectorX<FP>> The randomly generated set of vectors.
  */
 template<srl::concepts::floating_point FP>
-auto getRandVectors(const size_t &set_size, const size_t &vec_size, FP low, FP high, bool deterministic = false) -> srl::vector<srl::VectorX<FP>>;
+auto getRandVectors(const size_t &set_size, const size_t &vec_size, FP low, FP high, bool deterministic = false)
+  -> std::vector<srl::types::VectorX<FP>>;
 
 }    // namespace srl::utils
 

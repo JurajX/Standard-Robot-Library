@@ -103,7 +103,7 @@ auto svd(const Mat &mat) -> auto;
  * @return bool true if the given matrix is a valid inertia, false otherwise.
  */
 template<srl::concepts::floating_point FP>
-auto isInertia(const srl::Matrix3<FP> &inertia) -> bool;
+auto isInertia(const srl::types::Matrix3<FP> &inertia) -> bool;
 
 //
 // ----- Lie group functions
@@ -118,10 +118,10 @@ auto isInertia(const srl::Matrix3<FP> &inertia) -> bool;
  * @tparam FP Floating point type.
  * @param angle The angle indicating how much to rotate.
  * @param normed_axis The axis around which to rotate.
- * @return srl::Matrix3<FP> The rotation matrix.
+ * @return srl::types::Matrix3<FP> The rotation matrix.
  */
 template<srl::concepts::floating_point FP>
-auto rotation(const FP &angle, const srl::Vector3<FP> &normed_axis) -> srl::Matrix3<FP>;
+auto rotation(const FP &angle, const srl::types::Vector3<FP> &normed_axis) -> srl::types::Matrix3<FP>;
 
 /**
  * @brief Create a rotation matrix from a rotation vector.
@@ -133,10 +133,10 @@ auto rotation(const FP &angle, const srl::Vector3<FP> &normed_axis) -> srl::Matr
  *
  * @tparam FP Floating point type.
  * @param rot_vec The rotation vector representing the rotation.
- * @return srl::Matrix3<FP> The rotation matrix.
+ * @return srl::types::Matrix3<FP> The rotation matrix.
  */
 template<srl::concepts::floating_point FP>
-auto rotation(const srl::Vector3<FP> &rot_vec) -> srl::Matrix3<FP>;
+auto rotation(const srl::types::Vector3<FP> &rot_vec) -> srl::types::Matrix3<FP>;
 
 /**
  * @brief Apply an adjoint transformation to a matrix, i.e. \f$ \mathrm{rotation} \cdot \mathrm{element} \cdot \mathrm{rotation}^{T} \f$.
@@ -149,10 +149,10 @@ auto rotation(const srl::Vector3<FP> &rot_vec) -> srl::Matrix3<FP>;
  * @tparam FP Floating point type.
  * @param element The matrix to which the adjoint is applied.
  * @param rotation The rotation matrix used for adjoint operation.
- * @return srl::Matrix3<FP> The adjoint of the element by rotation.
+ * @return srl::types::Matrix3<FP> The adjoint of the element by rotation.
  */
 template<srl::concepts::floating_point FP>
-auto adjoint(const srl::Matrix3<FP> &element, const srl::Matrix3<FP> &rotation) -> srl::Matrix3<FP>;
+auto adjoint(const srl::types::Matrix3<FP> &element, const srl::types::Matrix3<FP> &rotation) -> srl::types::Matrix3<FP>;
 
 /**
  * @brief Apply an adjoint transformation to a matrix, i.e. \f$ \mathrm{rotation} \cdot \mathrm{diag(element)} \cdot \mathrm{rotation}^{T} \f$.
@@ -165,10 +165,10 @@ auto adjoint(const srl::Matrix3<FP> &element, const srl::Matrix3<FP> &rotation) 
  * @tparam FP Floating point type.
  * @param diagonal The diagonal of a matrix to which the adjoint is applied.
  * @param rotation The rotation matrix used for adjoint operation.
- * @return srl::Matrix3<FP> The adjoint of the diagonal by rotation.
+ * @return srl::types::Matrix3<FP> The adjoint of the diagonal by rotation.
  */
 template<srl::concepts::floating_point FP>
-auto adjoint(const srl::Vector3<FP> &diagonal, const srl::Matrix3<FP> &rotation) -> srl::Matrix3<FP>;
+auto adjoint(const srl::types::Vector3<FP> &diagonal, const srl::types::Matrix3<FP> &rotation) -> srl::types::Matrix3<FP>;
 
 /**
  * @brief Performs \f$ \sum_i L_{ijk} \mathrm{vec}_{i} \f$, where \f$ L_{i} \f$ are the generators of so3 Lie algebra.
@@ -180,10 +180,10 @@ auto adjoint(const srl::Vector3<FP> &diagonal, const srl::Matrix3<FP> &rotation)
  *
  * @tparam FP Floating point type.
  * @param vec The vector to contract with so3 generators.
- * @return srl::Matrix3<FP> The Lie algebra element.
+ * @return srl::types::Matrix3<FP> The Lie algebra element.
  */
 template<srl::concepts::floating_point FP>
-auto so3element(const srl::Vector3<FP> &vec) -> srl::Matrix3<FP>;
+auto so3element(const srl::types::Vector3<FP> &vec) -> srl::types::Matrix3<FP>;
 
 }    // namespace srl::math
 
@@ -192,27 +192,27 @@ auto so3element(const srl::Vector3<FP> &vec) -> srl::Matrix3<FP>;
 // ===== ===== ===== ===== Instantiations
 /// tell doxygen to skip from here \cond
 // ----- Matrix functions
-extern template auto srl::math::isPositiveDefinite(const srl::Matrix3f &matrix) -> bool;
-extern template auto srl::math::isPositiveDefinite(const srl::Matrix3d &matrix) -> bool;
+extern template auto srl::math::isPositiveDefinite(const srl::types::Matrix3f &matrix) -> bool;
+extern template auto srl::math::isPositiveDefinite(const srl::types::Matrix3d &matrix) -> bool;
 
-extern template auto srl::math::isInertia(const srl::Matrix3f &inertia) -> bool;
-extern template auto srl::math::isInertia(const srl::Matrix3d &inertia) -> bool;
+extern template auto srl::math::isInertia(const srl::types::Matrix3f &inertia) -> bool;
+extern template auto srl::math::isInertia(const srl::types::Matrix3d &inertia) -> bool;
 
 // - Lie group functions
-extern template auto srl::math::rotation(const float &angle, const srl::Vector3f &normed_axis) -> srl::Matrix3f;
-extern template auto srl::math::rotation(const double &angle, const srl::Vector3d &normed_axis) -> srl::Matrix3d;
+extern template auto srl::math::rotation(const float &angle, const srl::types::Vector3f &normed_axis) -> srl::types::Matrix3f;
+extern template auto srl::math::rotation(const double &angle, const srl::types::Vector3d &normed_axis) -> srl::types::Matrix3d;
 
-extern template auto srl::math::rotation(const srl::Vector3f &rot_vec) -> srl::Matrix3f;
-extern template auto srl::math::rotation(const srl::Vector3d &rot_vec) -> srl::Matrix3d;
+extern template auto srl::math::rotation(const srl::types::Vector3f &rot_vec) -> srl::types::Matrix3f;
+extern template auto srl::math::rotation(const srl::types::Vector3d &rot_vec) -> srl::types::Matrix3d;
 
-extern template auto srl::math::adjoint(const srl::Matrix3f &element, const srl::Matrix3f &rotation) -> srl::Matrix3f;
-extern template auto srl::math::adjoint(const srl::Matrix3d &element, const srl::Matrix3d &rotation) -> srl::Matrix3d;
+extern template auto srl::math::adjoint(const srl::types::Matrix3f &element, const srl::types::Matrix3f &rotation) -> srl::types::Matrix3f;
+extern template auto srl::math::adjoint(const srl::types::Matrix3d &element, const srl::types::Matrix3d &rotation) -> srl::types::Matrix3d;
 
-extern template auto srl::math::adjoint(const srl::Vector3f &diagonal, const srl::Matrix3f &rotation) -> srl::Matrix3f;
-extern template auto srl::math::adjoint(const srl::Vector3d &diagonal, const srl::Matrix3d &rotation) -> srl::Matrix3d;
+extern template auto srl::math::adjoint(const srl::types::Vector3f &diagonal, const srl::types::Matrix3f &rotation) -> srl::types::Matrix3f;
+extern template auto srl::math::adjoint(const srl::types::Vector3d &diagonal, const srl::types::Matrix3d &rotation) -> srl::types::Matrix3d;
 
-extern template auto srl::math::so3element(const srl::Vector3f &vec) -> srl::Matrix3f;
-extern template auto srl::math::so3element(const srl::Vector3d &vec) -> srl::Matrix3d;
+extern template auto srl::math::so3element(const srl::types::Vector3f &vec) -> srl::types::Matrix3f;
+extern template auto srl::math::so3element(const srl::types::Vector3d &vec) -> srl::types::Matrix3d;
 /// tell doxygen to skip untill here \endcond
 
 #endif    // SRL_MATH_HPP

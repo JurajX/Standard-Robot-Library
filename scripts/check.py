@@ -28,7 +28,10 @@ def clang_format(llvm_bin):
     """"Run clang format on all project files."""
     paths = [os.path.join(project_path, dir) for dir in DIRS]
     project_files = collect_files(paths, C_CPP_EXTS)
-    command = f"{llvm_bin}/clang-format -i -style=file {' '.join(project_files)}"
+    command = f"""
+        export PATH={llvm_bin}:$PATH
+        clang-format -i -style=file {' '.join(project_files)}
+    """
     print("\n---- Running clang-format.")
     os.system(command)
 
@@ -98,14 +101,11 @@ def main():
         "--llvm_bin",
         required=False,
         help="Path to the llvm binary directory.",
-        default="/usr/local/opt/llvm/bin",
-        # default="/opt/homebrew/opt/llvm/bin",
+        default="/usr/local/opt/llvm/bin:/opt/homebrew/opt/llvm/bin",
         type=str
     )
 
     args = parser.parse_args()
-    if not os.path.exists(args.llvm_bin):
-        raise ValueError(f"The given path, {args.llvm_bin}, does not exits.")
 
     if args.target == "all":
         clang_format(args.llvm_bin)

@@ -1,5 +1,5 @@
-#ifndef SRL_TYPES_HPP
-#define SRL_TYPES_HPP
+#ifndef SRL_COMMON_TYPES_HPP
+#define SRL_COMMON_TYPES_HPP
 #pragma once
 
 #include <srl/common/concepts.hpp>
@@ -8,20 +8,13 @@
 #include <Eigen/Geometry>
 
 #include <cstddef>
+#include <cstdint>
 #include <utility>
 #include <vector>
 
 using std::size_t;
 
-namespace srl {
-//
-// ----- std types
-/// @brief Typedef for unsigned int.
-using uint = unsigned int;
-
-/// @brief Typedef for the standard library vector.
-using std::vector;
-
+namespace srl::types {
 //
 // ----- Vectors
 /// @brief Typedef for the Eigen 3-dim vector.
@@ -145,12 +138,12 @@ using Quatf = Quat<float>;
 /// @brief Typedef for an standard library pair of Eigen quaternions and 3-dim vectors.
 /// @tparam FP Floating point type.
 template<srl::concepts::floating_point FP>
-using QuatVec3 = std::pair<srl::Quat<FP>, srl::Vector3<FP>>;
+using QuatVec3 = std::pair<Quat<FP>, Vector3<FP>>;
 /// @brief Typedef for an standard library pair of Eigen double quaternions and 3-dim vectors.
 using QuatVec3d = QuatVec3<double>;
 /// @brief Typedef for an standard library pair of Eigen float quaternions and 3-dim vectors.
 using QuatVec3f = QuatVec3<float>;
 
-}    // namespace srl
+}    // namespace srl::types
 
-#endif    // SRL_TYPES_HPP
+#endif    // SRL_COMMON_TYPES_HPP

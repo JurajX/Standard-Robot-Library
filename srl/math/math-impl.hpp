@@ -61,10 +61,10 @@ auto svd(const Mat &mat) -> auto
 }
 
 template<srl::concepts::floating_point FP>
-auto isInertia(const srl::Matrix3<FP> &inertia) -> bool
+auto isInertia(const types::Matrix3<FP> &inertia) -> bool
 {
     auto [U, diag, V] { svd(inertia) };
-    bool isPosDef { (U * V.transpose()).isApprox(kMatrixId3<FP>) };
+    bool isPosDef { (U * V.transpose()).isApprox(constants::kMatrixId3<FP>) };
     bool fulfilTriangIneq { diag(0) < (diag(1) + diag(2)) && diag(1) < (diag(2) + diag(0)) && diag(2) < (diag(0) + diag(1)) };
     if (isPosDef && fulfilTriangIneq)
         return true;
@@ -74,37 +74,37 @@ auto isInertia(const srl::Matrix3<FP> &inertia) -> bool
 //
 // ----- Lie group functions
 template<srl::concepts::floating_point FP>
-auto rotation(const FP &angle, const srl::Vector3<FP> &normed_axis) -> srl::Matrix3<FP>
+auto rotation(const FP &angle, const types::Vector3<FP> &normed_axis) -> types::Matrix3<FP>
 {
     return Eigen::AngleAxis<FP>(angle, normed_axis).matrix();
 }
 
 template<srl::concepts::floating_point FP>
-auto rotation(const srl::Vector3<FP> &rot_vec) -> srl::Matrix3<FP>
+auto rotation(const types::Vector3<FP> &rot_vec) -> types::Matrix3<FP>
 {
     FP norm { rot_vec.norm() };
-    if (eq<FP>(norm, 0, 0, srl::kEps<FP>)) {
-        return srl::kMatrixId3<FP>;
+    if (eq<FP>(norm, 0, 0, constants::kEps<FP>)) {
+        return constants::kMatrixId3<FP>;
     }
-    return rotation(norm, static_cast<srl::Vector3<FP>>((1 / norm) * rot_vec));
+    return rotation(norm, static_cast<types::Vector3<FP>>((1 / norm) * rot_vec));
 }
 
 template<srl::concepts::floating_point FP>
-auto adjoint(const srl::Matrix3<FP> &element, const srl::Matrix3<FP> &rotation) -> srl::Matrix3<FP>
+auto adjoint(const types::Matrix3<FP> &element, const types::Matrix3<FP> &rotation) -> types::Matrix3<FP>
 {
     return rotation * element * rotation.transpose();
 }
 
 template<srl::concepts::floating_point FP>
-auto adjoint(const srl::Vector3<FP> &diagonal, const srl::Matrix3<FP> &rotation) -> srl::Matrix3<FP>
+auto adjoint(const types::Vector3<FP> &diagonal, const types::Matrix3<FP> &rotation) -> types::Matrix3<FP>
 {
-    return adjoint(static_cast<srl::Matrix3<FP>>(diagonal.asDiagonal()), rotation);
+    return adjoint(static_cast<types::Matrix3<FP>>(diagonal.asDiagonal()), rotation);
 }
 
 template<srl::concepts::floating_point FP>
-auto so3element(const srl::Vector3<FP> &vec) -> srl::Matrix3<FP>
+auto so3element(const types::Vector3<FP> &vec) -> types::Matrix3<FP>
 {
-    return srl::Matrix3<FP> { vec[0] * srl::kSo3<FP>[0] + vec[1] * srl::kSo3<FP>[1] + vec[2] * srl::kSo3<FP>[2] };
+    return types::Matrix3<FP> { vec[0] * constants::kSo3<FP>[0] + vec[1] * constants::kSo3<FP>[1] + vec[2] * constants::kSo3<FP>[2] };
 }
 
 }    // namespace srl::math

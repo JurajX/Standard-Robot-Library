@@ -14,70 +14,72 @@ template<srl::concepts::floating_point FP>
 class TestSettersAndGetters : public ::testing::Test
 {
 protected:
-    const static inline srl::uint nJoints { 3 };
-    const static inline srl::uint nJointsBad { 4 };
-    const static inline srl::Vector3<FP> gravity1 { 0, 0, -1 * srl::kG<FP> };
-    const static inline srl::Vector3<FP> gravity2 { 0, -1, 0 };
-    const static inline srl::Matrix3X<FP> jRotAxes {
+    const static inline uint32_t nJoints { 3 };
+    const static inline uint32_t nJointsBad { 4 };
+    const static inline srl::types::Vector3<FP> gravity1 { 0, 0, -1 * srl::constants::kG<FP> };
+    const static inline srl::types::Vector3<FP> gravity2 { 0, -1, 0 };
+    const static inline srl::types::Matrix3X<FP> jRotAxes {
         {1, 0, 0},
         {0, 1, 0},
         {0, 0, 1}
     };
-    const static inline srl::Matrix3X<FP> jRotAxesBad {
+    const static inline srl::types::Matrix3X<FP> jRotAxesBad {
         {2, 0, 0},
         {0, 2, 0},
         {0, 0, 2}
     };
-    const static inline srl::Matrix3X<FP> lLengths {
+    const static inline srl::types::Matrix3X<FP> lLengths {
         {1, 0, 0, 0},
         {0, 1, 0, 0},
         {0, 0, 1, 1}
     };
-    const static inline srl::VectorX<FP> lMasses {
+    const static inline srl::types::VectorX<FP> lMasses {
         {1, 1, 1}
     };
-    const static inline srl::VectorX<FP> lMassesBad1 {
+    const static inline srl::types::VectorX<FP> lMassesBad1 {
         {-1, 1, 1}
     };
-    const static inline srl::Matrix3X<FP> lCoM {
+    const static inline srl::types::Matrix3X<FP> lCoM {
         {1, 0, 0},
         {0, 1, 0},
         {0, 0, 1}
     };
-    const static inline srl::Matrix3<FP> inertia {
+    const static inline srl::types::Matrix3<FP> inertia {
         {3, 0, 0},
         {0, 4, 0},
         {0, 0, 5}
     };
-    const static inline srl::Matrix3<FP> inertiaBad {
+    const static inline srl::types::Matrix3<FP> inertiaBad {
         {-3, 0, 0},
         { 0, 4, 0},
         { 0, 0, 5}
     };
 
-    const static inline srl::Matrix3X<FP> principals {
+    const static inline srl::types::Matrix3X<FP> principals {
         {3, 3, 3},
         {4, 4, 4},
         {5, 5, 5}
     };
-    const static inline srl::Matrix3X<FP> principalsBad {
+    const static inline srl::types::Matrix3X<FP> principalsBad {
         {3, 3},
         {4, 4},
         {5, 5}
     };
-    const static inline srl::Matrix3X<FP> rots {
+    const static inline srl::types::Matrix3X<FP> rots {
         {1, 0, 0},
         {0, 2, 0},
         {0, 0, 3}
     };
 
-    const static inline srl::VectorX<FP> &damping { lMasses };
-    const static inline srl::VectorX<FP> &dampingBad1 { lMassesBad1 };
+    const static inline srl::types::VectorX<FP> &damping { lMasses };
+    const static inline srl::types::VectorX<FP> &dampingBad1 { lMassesBad1 };
 
-    const static inline srl::AAxis<FP> baseRot { srl::kPI<FP> / 3, srl::Vector3<FP>::UnitZ() };
-    const static inline srl::Vector3<FP> baseTran { 1, 2, 3 };
-    const static inline srl::Transform3<FP> baseTf { srl::Transform3<FP>(srl::kTransformId3<FP>).rotate(baseRot).translate(baseTran) };
-    const static inline srl::QuatVec3<FP> baseQV3 { baseRot, baseTran };
+    const static inline srl::types::AAxis<FP> baseRot { srl::constants::kPI<FP> / 3, srl::types::Vector3<FP>::UnitZ() };
+    const static inline srl::types::Vector3<FP> baseTran { 1, 2, 3 };
+    const static inline srl::types::Transform3<FP> baseTf {
+        srl::types::Transform3<FP>(srl::constants::kTransformId3<FP>).rotate(baseRot).translate(baseTran)
+    };
+    const static inline srl::types::QuatVec3<FP> baseQV3 { baseRot, baseTran };
 
     srl::model::RobotModel<FP> model { nJoints };
     srl::model::RobotModel<FP> modelBad { nJointsBad };
@@ -141,12 +143,12 @@ TYPED_TEST(TestSettersAndGetters, LinkCentresOfMasses)    // NOLINT
 TYPED_TEST(TestSettersAndGetters, LinkInertiaTensors)    // NOLINT
 {
     // Testing setLinkInertiaTensors and getLinkInertiaTensors
-    const srl::vector<srl::Matrix3<TypeParam>> inertias { this->inertia, this->inertia, this->inertia };
-    const srl::vector<srl::Matrix3<TypeParam>> inertiasBad { this->inertia, this->inertia, this->inertiaBad };
-    srl::vector<srl::Matrix3<TypeParam>> expected;
-    for (srl::uint idx = 0; idx < this->nJoints; idx += 1) {
-        const srl::Matrix3<TypeParam> rot { srl::math::rotation(srl::Vector3<TypeParam> { this->rots.col(idx) }) };
-        expected.emplace_back(srl::math::adjoint(srl::Vector3<TypeParam> { this->principals.col(idx) }, rot));
+    const std::vector<srl::types::Matrix3<TypeParam>> inertias { this->inertia, this->inertia, this->inertia };
+    const std::vector<srl::types::Matrix3<TypeParam>> inertiasBad { this->inertia, this->inertia, this->inertiaBad };
+    std::vector<srl::types::Matrix3<TypeParam>> expected;
+    for (uint32_t idx = 0; idx < this->nJoints; idx += 1) {
+        const srl::types::Matrix3<TypeParam> rot { srl::math::rotation(srl::types::Vector3<TypeParam> { this->rots.col(idx) }) };
+        expected.emplace_back(srl::math::adjoint(srl::types::Vector3<TypeParam> { this->principals.col(idx) }, rot));
     }
     // normal setting
     this->model.setLinkInertiaTensors(inertias);
@@ -179,7 +181,7 @@ TYPED_TEST(TestSettersAndGetters, GravityAcc)    // NOLINT
     EXPECT_EQ(this->model.getGravityAcc(), this->gravity1);
     // incorrect size
     this->model.setGravityAcc(this->gravity2);
-    EXPECT_EQ(this->model.getGravityAcc(), this->gravity2 * srl::kG<TypeParam>);
+    EXPECT_EQ(this->model.getGravityAcc(), this->gravity2 * srl::constants::kG<TypeParam>);
 }
 
 TYPED_TEST(TestSettersAndGetters, BaseTransform)    // NOLINT
@@ -187,7 +189,7 @@ TYPED_TEST(TestSettersAndGetters, BaseTransform)    // NOLINT
     // Testing setBaseTransform and getBaseTransform
     // normal setting
     this->model.setBaseTransform(this->baseTf);
-    EXPECT_TRUE(this->model.getBaseTransform().isApprox(this->baseTf, srl::kEps<TypeParam>));
+    EXPECT_TRUE(this->model.getBaseTransform().isApprox(this->baseTf, srl::constants::kEps<TypeParam>));
 }
 
 TYPED_TEST(TestSettersAndGetters, BasePose)    // NOLINT
@@ -195,8 +197,8 @@ TYPED_TEST(TestSettersAndGetters, BasePose)    // NOLINT
     // Testing setBasePose and getBasePose
     // normal setting
     this->model.setBasePose(this->baseQV3);
-    EXPECT_TRUE(this->model.getBasePose().first.isApprox(this->baseQV3.first, srl::kEps<TypeParam>));
-    EXPECT_TRUE(this->model.getBasePose().second.isApprox(this->baseQV3.second, srl::kEps<TypeParam>));
+    EXPECT_TRUE(this->model.getBasePose().first.isApprox(this->baseQV3.first, srl::constants::kEps<TypeParam>));
+    EXPECT_TRUE(this->model.getBasePose().second.isApprox(this->baseQV3.second, srl::constants::kEps<TypeParam>));
 }
 
 auto main(int argc, char **argv) -> int

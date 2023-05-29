@@ -43,6 +43,8 @@ function(add_compile_options)
     elseif(GCC)
         list(APPEND WARNINGS
             -Wuseless-cast                      # unnecessary cast
+            -Wsign-conversion                   # implicit sign conversions
+            -Warith-conversion                  # implicit arithmetic conversions
         )
     endif()
 
