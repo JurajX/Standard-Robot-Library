@@ -13,6 +13,7 @@ macro(initiate)
     include(eigen)                  # needs FetchContent
     include(fmt)                    # needs FetchContent
     include(gtest)                  # needs FetchContent
+    include(tiny_xml2)              # needs FetchContent
     include(add_compile_options)
     include(add_exe)                # needs add_compile_options and gtest
 
