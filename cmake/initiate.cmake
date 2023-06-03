@@ -16,4 +16,11 @@ macro(initiate)
     include(tiny_xml2)              # needs FetchContent
     include(add_compile_options)
     include(add_exe)                # needs add_compile_options and gtest
+
+    if(APPLE)
+        set(CMAKE_INSTALL_RPATH "@loader_path/../lib;@loader_path")
+    elseif(UNIX)
+        set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib:$ORIGIN/")
+    endif()
+
 endmacro(initiate)

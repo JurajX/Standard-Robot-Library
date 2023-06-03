@@ -4,12 +4,6 @@ set(
     ${CMAKE_SOURCE_DIR}/srl/math/math-impl.hpp
 )
 
-install(
-    FILES ${HDRS}
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-    COMPONENT development
-)
-
 add_library(
     srl_math
     ${CMAKE_SOURCE_DIR}/srl/math/math.cpp
@@ -34,4 +28,11 @@ target_include_directories(
     srl_math PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
     $<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}>
+)
+
+install(TARGETS srl_math)
+install(
+    FILES ${HDRS}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/srl/math
+    COMPONENT development
 )

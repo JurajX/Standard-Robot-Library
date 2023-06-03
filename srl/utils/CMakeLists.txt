@@ -6,12 +6,6 @@ set(
     ${CMAKE_SOURCE_DIR}/srl/utils/timers-impl.hpp
 )
 
-install(
-    FILES ${HDRS}
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-    COMPONENT development
-)
-
 add_library(
     srl_utils INTERFACE
     ${HDRS}
@@ -33,4 +27,11 @@ target_include_directories(
     srl_utils INTERFACE
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
     $<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}>
+)
+
+install(TARGETS srl_utils)
+install(
+    FILES ${HDRS}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/srl/utils
+    COMPONENT development
 )

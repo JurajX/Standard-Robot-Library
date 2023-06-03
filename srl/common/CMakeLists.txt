@@ -6,12 +6,6 @@ set(
     ${CMAKE_SOURCE_DIR}/srl/common/types.hpp
 )
 
-install(
-    FILES ${HDRS}
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-    COMPONENT development
-)
-
 add_library(
     srl_common INTERFACE
     ${HDRS}
@@ -33,4 +27,11 @@ target_include_directories(
     srl_common INTERFACE
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
     $<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}>
+)
+
+install(TARGETS srl_common)
+install(
+    FILES ${HDRS}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/srl/common
+    COMPONENT development
 )

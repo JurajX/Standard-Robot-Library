@@ -30,4 +30,6 @@ function(add_exe)
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         )
     endif(EXE_TEST)
+
+    install(TARGETS ${EXE_NAME})
 endfunction(add_exe)

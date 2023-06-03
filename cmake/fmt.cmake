@@ -6,4 +6,5 @@ FetchContent_Declare(
     UPDATE_DISCONNECTED ON
     SYSTEM
 )
+set(FMT_INSTALL ON)
 FetchContent_MakeAvailable(fmt)
